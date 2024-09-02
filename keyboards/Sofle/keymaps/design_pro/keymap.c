@@ -2349,12 +2349,12 @@ static void print_status_logo(void) {
     }
 }
 
-// oled_rotation_t oled_init_user(oled_rotation_t rotation) {
-//     if (is_keyboard_master()) {
-//         return OLED_ROTATION_270;
-//     }
-//     return rotation;
-// }
+oled_rotation_t oled_init_user(oled_rotation_t rotation) {
+    if (is_keyboard_master()) {
+        return OLED_ROTATION_0;
+    }
+    return rotation;
+}
 
 bool oled_task_user(void) {
     if (is_keyboard_master()) {
