@@ -1,4 +1,5 @@
-/* Copyright 2024 Jeron Kuxhausen
+
+ /* Copyright 2024 rikardoricz
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -13,11 +14,7 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
   */
-  // SOFLE RGB
 #include <stdio.h>
-
-// For Debugging
-#include "print.h"
 
 #include QMK_KEYBOARD_H
 
@@ -2151,10 +2148,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 };
 
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // OLED Functions
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#ifdef OLED_ENABLE
 
 // Cool Images
 static void render_logo(void) {
@@ -2368,167 +2366,18 @@ bool oled_task_user(void) {
     return false;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Encoder Functions
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#endif
 
-bool encoder_update_user(uint8_t index, bool clockwise)
-{
-  // Print the current layer for debugging
-  printf("Current layer: %d\n", get_highest_layer(layer_state));
+#ifdef ENCODER_ENABLE
 
-  if (index == 0)
-  {
-    switch (get_highest_layer(layer_state)) {
-    case _QWERTY:
-    case _FUNCPAD:
-      if (clockwise) {
-        register_code(KC_WH_D);
-        unregister_code(KC_WH_D);
-      } else {
-        register_code(KC_WH_U);
-        unregister_code(KC_WH_U);
-      }
-      break;
-    case _ILSTR:
-      if (clockwise) {
-        register_code(KC_LCTL);
-        register_code(KC_EQL);
-        unregister_code(KC_EQL);
-        unregister_code(KC_LCTL);
-      } else {
-        register_code(KC_LCTL);
-        register_code(KC_MINS);
-        unregister_code(KC_MINS);
-        unregister_code(KC_LCTL);
-      }
-      break;
-    case _LFTHND:
-      if (clockwise) {
-        register_code(KC_LCTL);
-        register_code(KC_RBRC);
-        unregister_code(KC_RBRC);
-        unregister_code(KC_LCTL);
-      } else {
-        register_code(KC_LCTL);
-        register_code(KC_LBRC);
-        unregister_code(KC_LBRC);
-        unregister_code(KC_LCTL);
-      }
-      break;
-    default:
-      if (clockwise) {
-        register_code(KC_D);
-        unregister_code(KC_D);
-      } else {
-        register_code(KC_U);
-        unregister_code(KC_U);
-      }
-      break;
-    }
-  }
-  else if (index == 1)
-  {
-    switch (get_highest_layer(layer_state)) {
-    case _QWERTY:
-    case _FUNCPAD:
-      if (clockwise) {
-        register_code(KC_WH_D);
-        unregister_code(KC_WH_D);
-      } else {
-        register_code(KC_WH_U);
-        unregister_code(KC_WH_U);
-      }
-      break;
-    case _ILSTR:
-      if (clockwise) {
-        register_code(KC_LCTL);
-        register_code(KC_RBRC);
-        unregister_code(KC_RBRC);
-        unregister_code(KC_LCTL);
-      } else {
-        register_code(KC_LCTL);
-        register_code(KC_LBRC);
-        unregister_code(KC_LBRC);
-        unregister_code(KC_LCTL);
-      }
-      break;
-    case _LFTHND:
-      if (clockwise) {
-        register_code(KC_LCTL);
-        register_code(KC_RBRC);
-        unregister_code(KC_RBRC);
-        unregister_code(KC_LCTL);
-      } else {
-        register_code(KC_LCTL);
-        register_code(KC_LBRC);
-        unregister_code(KC_LBRC);
-        unregister_code(KC_LCTL);
-      }
-      break;
-    default:
-      if (clockwise) {
-        register_code(KC_WH_D);
-        unregister_code(KC_WH_D);
-      } else {
-        register_code(KC_WH_U);
-        unregister_code(KC_WH_U);
-      }
-      break;
-    }
-  }
-
-  return false;
-}
-
-tap_dance_action_t tap_dance_actions[] = {
-        [DANCE_ESC] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_ESC, dance_ESC_finished, dance_ESC_reset),
-        [DANCE_ENT] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_ENT, dance_ENT_finished, dance_ENT_reset),
-        [DANCE_MINS] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_MINS, dance_MINS_finished, dance_MINS_reset),
-        [DANCE_EQL] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_EQL, dance_EQL_finished, dance_EQL_reset),
-        [DANCE_LBRC] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_LBRC, dance_LBRC_finished, dance_LBRC_reset),
-        [DANCE_RBRC] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_RBRC, dance_RBRC_finished, dance_RBRC_reset),
-        [DANCE_F1] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_F1, dance_F1_finished, dance_F1_reset),
-        [DANCE_F2] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_F2, dance_F2_finished, dance_F2_reset),
-        [DANCE_F3] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_F3, dance_F3_finished, dance_F3_reset),
-        [DANCE_F4] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_F4, dance_F4_finished, dance_F4_reset),
-        [DANCE_F5] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_F5, dance_F5_finished, dance_F5_reset),
-        [DANCE_F6] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_F6, dance_F6_finished, dance_F6_reset),
-        [DANCE_F7] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_F7, dance_F7_finished, dance_F7_reset),
-        [DANCE_F8] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_F8, dance_F8_finished, dance_F8_reset),
-        [DANCE_F9] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_F9, dance_F9_finished, dance_F9_reset),
-        [DANCE_F10] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_F10, dance_F10_finished, dance_F10_reset),
-        [DANCE_F11] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_F11, dance_F11_finished, dance_F11_reset),
-        [DANCE_F12] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_F12, dance_F12_finished, dance_F12_reset),
-        [DANCE_0] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_0, dance_0_finished, dance_0_reset),
-        [DANCE_1] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_1, dance_1_finished, dance_1_reset),
-        [DANCE_2] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_2, dance_2_finished, dance_2_reset),
-        [DANCE_3] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_3, dance_3_finished, dance_3_reset),
-        [DANCE_5] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_5, dance_5_finished, dance_5_reset),
-        [DANCE_7] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_7, dance_7_finished, dance_7_reset),
-        [DANCE_8] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_8, dance_8_finished, dance_8_reset),
-        [DANCE_A] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_A, dance_A_finished, dance_A_reset),
-        [DANCE_B] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_B, dance_B_finished, dance_B_reset),
-        [DANCE_C] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_C, dance_C_finished, dance_C_reset),
-        [DANCE_D] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_D, dance_D_finished, dance_D_reset),
-        [DANCE_E] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_E, dance_E_finished, dance_E_reset),
-        [DANCE_F] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_F, dance_F_finished, dance_F_reset),
-        [DANCE_G] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_G, dance_G_finished, dance_G_reset),
-        [DANCE_H] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_H, dance_H_finished, dance_H_reset),
-        [DANCE_I] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_I, dance_I_finished, dance_I_reset),
-        [DANCE_J] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_J, dance_J_finished, dance_J_reset),
-        [DANCE_K] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_K, dance_K_finished, dance_K_reset),
-        [DANCE_L] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_L, dance_L_finished, dance_L_reset),
-        [DANCE_N] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_N, dance_N_finished, dance_N_reset),
-        [DANCE_O] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_O, dance_O_finished, dance_O_reset),
-        [DANCE_P] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_P, dance_P_finished, dance_P_reset),
-        [DANCE_Q] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_Q, dance_Q_finished, dance_Q_reset),
-        [DANCE_R] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_R, dance_R_finished, dance_R_reset),
-        [DANCE_S] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_S, dance_S_finished, dance_S_reset),
-        [DANCE_T] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_T, dance_T_finished, dance_T_reset),
-        [DANCE_V] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_V, dance_V_finished, dance_V_reset),
-        [DANCE_W] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_W, dance_W_finished, dance_W_reset),
-        [DANCE_X] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_X, dance_X_finished, dance_X_reset),
-        [DANCE_Y] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_Y, dance_Y_finished, dance_Y_reset),
-        [DANCE_Z] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_Z, dance_Z_finished, dance_Z_reset),
+#if defined(ENCODER_MAP_ENABLE)
+const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][2] = {
+    [_QWERTY] =     { ENCODER_CCW_CW(KC_MS_WH_UP, KC_MS_WH_DOWN), ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
+    [_FUNCPAD] =    { ENCODER_CCW_CW(KC_MS_WH_UP, KC_MS_WH_DOWN), ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
+    [_ILSTR] =      { ENCODER_CCW_CW(RGB_VAD, RGB_VAI),           ENCODER_CCW_CW(RGB_SPD, RGB_SPI)  },
+    [_LFTHND] =     { ENCODER_CCW_CW(RGB_RMOD, RGB_MOD),          ENCODER_CCW_CW(KC_RIGHT, KC_LEFT) },
+    //                  Encoder 1                                     Encoder 2
 };
+#endif
+
+#endif
