@@ -21,9 +21,12 @@
 #define VIAL_UNLOCK_COMBO_COLS {4, 1}
 #define DYNAMIC_KEYMAP_LAYER_COUNT 10
 
-#define VIAL_TAP_DANCE_ENTRIES 50
-#define DYNAMIC_KEYMAP_MACRO_COUNT 50
-#define VIAL_COMBO_ENTRIES 50
+#define VIAL_TAP_DANCE_ENTRIES 100
+#define DYNAMIC_KEYMAP_MACRO_COUNT 100
+#define VIAL_COMBO_ENTRIES 100
+
+#define TAPPING_TERM 180
+#define NO_ACTION_TAPPING
 
 #define MASTER_LEFT
 #define SPLIT_USB_DETECT
@@ -31,15 +34,6 @@
 #define CUSTOM_FONT
 
 #define CUSTOM_LAYER_READ //if you remove this it causes issues - needs better guarding
-
-
-// #define QUICK_TAP_TERM 0
-// #ifdef TAPPING_TERM
-//     #undef TAPPING_TERM
-//     #define TAPPING_TERM 200
-// #endif
-
-#define NO_ACTION_TAPPING
 
 // #define ENCODER_DIRECTION_FLIP
 
