@@ -63,7 +63,7 @@ enum {
     DANCE_N,
     DANCE_O,
     DANCE_P,
-    DANCE_Q,
+    // DANCE_Q,
     DANCE_R,
     DANCE_S,
     DANCE_T,
@@ -1335,9 +1335,6 @@ void dance_I_finished(tap_dance_state_t *state, void *user_data) {
     dance_state[DANCE_I] = dance_step(state);
     switch (dance_state[DANCE_I]) {
         case TD_SINGLE_TAP: register_code16(KC_I); break;
-        case TD_SINGLE_HOLD:
-            layer_on(_ILSTR);
-            break;
         case TD_DOUBLE_TAP:
             register_code(KC_LCTL);
             register_code(KC_LSFT);
@@ -1588,34 +1585,34 @@ void dance_P_reset(tap_dance_state_t *state, void *user_data) {
 }
 
 // Dance Q
-void on_dance_Q(tap_dance_state_t *state, void *user_data) {
-    // Used for Immediate Actions
-}
+// void on_dance_Q(tap_dance_state_t *state, void *user_data) {
+//     // Used for Immediate Actions
+// }
 
-void dance_Q_finished(tap_dance_state_t *state, void *user_data) {
-    dance_state[DANCE_Q] = dance_step(state);
-    switch (dance_state[DANCE_Q]) {
-        case TD_SINGLE_TAP: register_code16(KC_Q); break;
-        case TD_DOUBLE_TAP:
-            register_code(KC_LCTL);
-            register_code(KC_Q);
-            break;
-        default: break;
-    }
-}
+// void dance_Q_finished(tap_dance_state_t *state, void *user_data) {
+//     dance_state[DANCE_Q] = dance_step(state);
+//     switch (dance_state[DANCE_Q]) {
+//         case TD_SINGLE_TAP: register_code16(KC_Q); break;
+//         case TD_DOUBLE_TAP:
+//             register_code(KC_LCTL);
+//             register_code(KC_Q);
+//             break;
+//         default: break;
+//     }
+// }
 
-void dance_Q_reset(tap_dance_state_t *state, void *user_data) {
-    wait_ms(10);
-    switch (dance_state[DANCE_Q]) {
-        case TD_SINGLE_TAP: unregister_code16(KC_Q); break;
-        case TD_DOUBLE_TAP:
-            unregister_code(KC_Q);
-            unregister_code(KC_LCTL);
-            break;
-        default: break;
-    }
-    dance_state[DANCE_Q] = 0;
-}
+// void dance_Q_reset(tap_dance_state_t *state, void *user_data) {
+//     wait_ms(10);
+//     switch (dance_state[DANCE_Q]) {
+//         case TD_SINGLE_TAP: unregister_code16(KC_Q); break;
+//         case TD_DOUBLE_TAP:
+//             unregister_code(KC_Q);
+//             unregister_code(KC_LCTL);
+//             break;
+//         default: break;
+//     }
+//     dance_state[DANCE_Q] = 0;
+// }
 
 // Dance R
 void on_dance_R(tap_dance_state_t *state, void *user_data) {
@@ -1960,8 +1957,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                 KC_F13,         KC_F14,         KC_F15,         KC_F16,         KC_F17,         KC_F18,         KC_F19,         KC_F20,         KC_F21,         KC_F22,         KC_F23,         KC_F24,
     KC_ESC,     TD(DANCE_F1),   TD(DANCE_F2),   TD(DANCE_F3),   TD(DANCE_F4),   TD(DANCE_F5),   TD(DANCE_F6),   TD(DANCE_F7),   TD(DANCE_F8),   TD(DANCE_F9),   TD(DANCE_F10),  TD(DANCE_F11),  TD(DANCE_F12),  KC_PSCR, KC_SCRL, KC_PAUS,    KC_VOLD, KC_VOLU, KC_MUTE, KC_PWR,     KC_HELP,
     KC_GRV,     TD(DANCE_1),    TD(DANCE_2),    TD(DANCE_3),    KC_4,           TD(DANCE_5),    KC_6,           TD(DANCE_7),    TD(DANCE_8),    KC_9,           TD(DANCE_0),    KC_MINS,        KC_EQL,         KC_INT3, KC_BSPC, KC_INS,  KC_HOME, KC_PGUP,    KC_NUM,  KC_PSLS, KC_PAST, KC_PMNS,    KC_STOP, KC_AGIN,
-    KC_TAB,     TD(DANCE_Q),    TD(DANCE_W),    TD(DANCE_E),    TD(DANCE_R),    TD(DANCE_T),    TD(DANCE_Y),    KC_U,           TD(DANCE_I),    TD(DANCE_O),    TD(DANCE_P),    TD(DANCE_LBRC), TD(DANCE_RBRC), KC_BSLS, KC_DEL,  KC_END,  KC_PGDN,    KC_P7,   KC_P8,   KC_P9,   KC_PPLS,    KC_MENU, KC_UNDO,
-    KC_CAPS,    TD(DANCE_A),    TD(DANCE_S),    TD(DANCE_D),    TD(DANCE_F),    TD(DANCE_G),    TD(DANCE_H),    TD(DANCE_J),    KC_K,           KC_L,           KC_SCLN,        KC_QUOT,        KC_NUHS,        KC_ENT,                                KC_P4,   KC_P5,   KC_P6,   KC_PCMM,    KC_SLCT, KC_COPY,
+    KC_TAB,     KC_Q,           TD(DANCE_W),    TD(DANCE_E),    TD(DANCE_R),    TD(DANCE_T),    TD(DANCE_Y),    KC_U,           TD(DANCE_I),    TD(DANCE_O),    TD(DANCE_P),    TD(DANCE_LBRC), TD(DANCE_RBRC), KC_BSLS, KC_DEL,  KC_END,  KC_PGDN,    KC_P7,   KC_P8,   KC_P9,   KC_PPLS,    KC_MENU, KC_UNDO,
+    KC_CAPS,    TD(DANCE_A),    TD(DANCE_S),    TD(DANCE_D),    TD(DANCE_F),    TD(DANCE_G),    TD(DANCE_H),    TD(DANCE_J),    TD(DANCE_K),    TD(DANCE_L),    KC_SCLN,        KC_QUOT,        KC_NUHS,        KC_ENT,                                KC_P4,   KC_P5,   KC_P6,   KC_PCMM,    KC_SLCT, KC_COPY,
     KC_LSFT,    KC_NUBS,        TD(DANCE_Z),    TD(DANCE_X),    TD(DANCE_C),    TD(DANCE_V),    TD(DANCE_B),    TD(DANCE_N),    KC_M,           KC_COMM,        KC_DOT,         KC_SLSH,        KC_INT1,        KC_RSFT, KC_UP,               KC_P1,   KC_P2,   KC_P3,   KC_PEQL,    KC_EXEC, KC_PSTE,
     KC_LCTL,    KC_LCTL,        KC_LALT,        KC_INT5,        KC_LNG2,        KC_SPC,         KC_LNG1,        KC_INT4,        KC_INT2,        KC_LALT,        KC_LCTL,        KC_APP,         KC_RCTL,        KC_LEFT, KC_DOWN, KC_RGHT,    KC_P0,            KC_PDOT, KC_PENT,    KC_FIND, KC_CUT
     ),
@@ -2004,7 +2001,7 @@ tap_dance_action_t tap_dance_actions[] = {
         [DANCE_N] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_N, dance_N_finished, dance_N_reset),
         [DANCE_O] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_O, dance_O_finished, dance_O_reset),
         [DANCE_P] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_P, dance_P_finished, dance_P_reset),
-        [DANCE_Q] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_Q, dance_Q_finished, dance_Q_reset),
+        // [DANCE_Q] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_Q, dance_Q_finished, dance_Q_reset),
         [DANCE_R] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_R, dance_R_finished, dance_R_reset),
         [DANCE_S] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_S, dance_S_finished, dance_S_reset),
         [DANCE_T] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_T, dance_T_finished, dance_T_reset),
