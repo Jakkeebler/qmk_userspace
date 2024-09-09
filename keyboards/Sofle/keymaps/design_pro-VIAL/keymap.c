@@ -272,13 +272,13 @@ static void print_status_logo(void) {
             render_qwerty();
             break;
         case 1:
-            render_funct();
-            break;
-        case 2:
             render_illstr();
             break;
-        case 3:
+        case 2:
             render_lfthand();
+            break;
+        case 3:
+            render_funct();
             break;
         default:
             render_logo();
