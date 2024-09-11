@@ -15,13 +15,11 @@
 */
   #pragma once
 
-
 //#define USE_MATRIX_I2C
 
 /* Select hand configuration */
 
 ///https://thomasbaart.nl/2018/12/01/reducing-firmware-size-in-qmk/
-
 
 #define MASTER_LEFT
 // #define MASTER_RIGHT
@@ -33,8 +31,5 @@
 
 #define QUICK_TAP_TERM 0
 #define TAPPING_TERM 180
-
-#undef ENCODER_RESOLUTION
-#define ENCODER_RESOLUTION 4
 
 #define ENCODER_DIRECTION_FLIP

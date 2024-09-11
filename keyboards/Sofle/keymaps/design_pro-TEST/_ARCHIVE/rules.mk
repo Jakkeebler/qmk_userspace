@@ -1,5 +1,6 @@
 # Bootloader
 BOOTLOADER = rp2040_bootloader
+# SRC += encoder.c
 
 # Keys
 MOUSEKEY_ENABLE = yes
@@ -8,8 +9,8 @@ TAP_DANCE_ENABLE = yes
 
 # Encoder
 ENCODER_ENABLE = yes
-# ENCODER0_RESOLUTION = 4
-# ENCODER1_RESOLUTION = 4
+ENCODER0_RESOLUTION = 4
+ENCODER1_RESOLUTION = 4
 
 # OLED
 OLED_ENABLE = yes

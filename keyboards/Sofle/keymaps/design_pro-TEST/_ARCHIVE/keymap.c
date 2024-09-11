@@ -1,5 +1,4 @@
-
- /* Copyright 2024 rikardoricz
+/* Copyright 2024 Jeron Kuxhausen
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -14,24 +13,15 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
   */
+  // SOFLE RGB
 #include <stdio.h>
 
+// For Debugging
+#include "print.h"
+#include "keymap.h"
+#include "encoder.h"
+
 #include QMK_KEYBOARD_H
-
-// Layer Declaration
-enum sofle_layers {
-    _QWERTY,
-    _ILSTR,
-    _LFTHND,
-    _FUNCPAD,
-};
-
-// Custom Keycodes Declaration
-enum custom_keycodes {
-    KC_LAYER = SAFE_RANGE,
-    KC_ARTBRD,
-    KC_FUNC,
-};
 
 // Custom Keycode Functions
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -67,95 +57,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return true;
 }
 
-// Tap Dance Declaration
-enum {
-    DANCE_ESC,
-    DANCE_ENT,
-    DANCE_MINS,
-    DANCE_EQL,
-    DANCE_LBRC,
-    DANCE_RBRC,
-    DANCE_F1,
-    DANCE_F2,
-    DANCE_F3,
-    DANCE_F4,
-    DANCE_F5,
-    DANCE_F6,
-    DANCE_F7,
-    DANCE_F8,
-    DANCE_F9,
-    DANCE_F10,
-    DANCE_F11,
-    DANCE_F12,
-    DANCE_0,
-    DANCE_1,
-    DANCE_2,
-    DANCE_3,
-    DANCE_5,
-    DANCE_7,
-    DANCE_8,
-    DANCE_A,
-    DANCE_B,
-    DANCE_C,
-    DANCE_D,
-    DANCE_E,
-    DANCE_F,
-    DANCE_G,
-    DANCE_H,
-    DANCE_I,
-    DANCE_J,
-    DANCE_K,
-    DANCE_L,
-    DANCE_N,
-    DANCE_O,
-    DANCE_P,
-    DANCE_Q,
-    DANCE_R,
-    DANCE_S,
-    DANCE_T,
-    DANCE_V,
-    DANCE_W,
-    DANCE_X,
-    DANCE_Y,
-    DANCE_Z,
-    TAP_DANCE_COUNT
-};
-
-typedef enum {
-    TD_NONE,
-    TD_UNKNOWN,
-    TD_SINGLE_TAP,
-    TD_SINGLE_HOLD,
-    TD_DOUBLE_TAP,
-    TD_DOUBLE_HOLD,
-    TD_DOUBLE_SINGLE_TAP,
-    TD_TRIPLE_TAP,
-    TD_TRIPLE_HOLD,
-    TD_MORE_TAPS
-} td_state_t;
-
-typedef struct {
-    bool is_press_action;
-    td_state_t state;
-} td_tap_t;
-
-static td_state_t dance_state[TAP_DANCE_COUNT];
-
-td_state_t dance_step(tap_dance_state_t *state) {
-    if (state->count == 1) {
-        if (state->interrupted || !state->pressed) return TD_SINGLE_TAP;
-        else return TD_SINGLE_HOLD;
-    } else if (state->count == 2) {
-        if (state->interrupted) return TD_DOUBLE_SINGLE_TAP;
-        else if (state->pressed) return TD_DOUBLE_HOLD;
-        else return TD_DOUBLE_TAP;
-    } else if (state->count == 3) {
-        if (state->pressed) return TD_TRIPLE_HOLD;
-        else return TD_TRIPLE_TAP;
-    }
-    return TD_MORE_TAPS;
-}
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Dance Functions
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -170,10 +71,11 @@ void dance_ESC_finished(tap_dance_state_t *state, void *user_data) {
     switch (dance_state[DANCE_ESC]) {
         case TD_SINGLE_TAP: register_code16(KC_ESC); break;
         case TD_SINGLE_HOLD:
-            layer_on(_LFTHND);
+            layer_on(_SWITCH);
             break;
         case TD_DOUBLE_TAP:
-            layer_off(_ILSTR);
+            uint8_t current_layer = get_highest_layer(layer_state);
+            layer_off(current_layer);
             layer_on(_QWERTY);
             break;
         default: break;
@@ -185,7 +87,7 @@ void dance_ESC_reset(tap_dance_state_t *state, void *user_data) {
     switch (dance_state[DANCE_ESC]) {
         case TD_SINGLE_TAP: unregister_code16(KC_ESC); break;
         case TD_SINGLE_HOLD:
-            layer_off(_LFTHND);
+            layer_off(_SWITCH);
             break;
         default: break;
     }
@@ -202,7 +104,7 @@ void dance_ENT_finished(tap_dance_state_t *state, void *user_data) {
     switch (dance_state[DANCE_ENT]) {
         case TD_SINGLE_TAP: register_code16(KC_ENT); break;
         case TD_SINGLE_HOLD:
-            layer_on(_FUNCPAD);
+            register_code(KC_LSFT);
             break;
         default: break;
     }
@@ -213,7 +115,7 @@ void dance_ENT_reset(tap_dance_state_t *state, void *user_data) {
     switch (dance_state[DANCE_ENT]) {
         case TD_SINGLE_TAP: unregister_code16(KC_ENT); break;
         case TD_SINGLE_HOLD:
-            layer_off(_FUNCPAD);
+            unregister_code(KC_LSFT);
             break;
         default: break;
     }
@@ -2032,7 +1934,7 @@ void dance_Y_finished(tap_dance_state_t *state, void *user_data) {
         case TD_DOUBLE_TAP:
             register_code(KC_LCTL);
             register_code(KC_Y);
-        case TD_TRIPLE_TAP:
+        case TD_DOUBLE_HOLD:
             register_code(KC_LCTL);
             register_code(KC_LALT);
             register_code(KC_LSFT);
@@ -2049,7 +1951,7 @@ void dance_Y_reset(tap_dance_state_t *state, void *user_data) {
         case TD_DOUBLE_TAP:
             unregister_code(KC_Y);
             unregister_code(KC_LCTL);
-        case TD_TRIPLE_TAP:
+        case TD_DOUBLE_HOLD:
             unregister_code(KC_Y);
             unregister_code(KC_LSFT);
             unregister_code(KC_LALT);
@@ -2100,6 +2002,42 @@ void dance_Z_reset(tap_dance_state_t *state, void *user_data) {
     dance_state[DANCE_Z] = 0;
 }
 
+// Dance FUNCPAD
+void on_dance_FUNCPAD(tap_dance_state_t *state, void *user_data) {
+    // Used for Immediate Actions
+}
+
+void dance_FUNCPAD_finished(tap_dance_state_t *state, void *user_data) {
+    dance_state[DANCE_FUNCPAD] = dance_step(state);
+    switch (dance_state[DANCE_FUNCPAD]) {
+        case TD_SINGLE_TAP:
+            set_oneshot_layer(_FUNCPAD, ONESHOT_START);
+            break;
+        case TD_SINGLE_HOLD:
+            layer_on(_FUNCPAD);
+            break;
+        case TD_DOUBLE_TAP:
+            uint8_t current_layer = get_highest_layer(layer_state);
+            if (current_layer != _FUNCPAD) {
+                layer_off(current_layer);
+            }
+            layer_on(_FUNCPAD);
+            break;
+        default: break;
+    }
+}
+
+void dance_FUNCPAD_reset(tap_dance_state_t *state, void *user_data) {
+    wait_ms(10);
+    switch (dance_state[DANCE_FUNCPAD]) {
+        case TD_SINGLE_HOLD:
+            layer_off(_FUNCPAD);
+            break;
+        default: break;
+    }
+    dance_state[DANCE_FUNCPAD] = 0;
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Keymaps
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2109,32 +2047,35 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // Qwerty Layer
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
   [_QWERTY] = LAYOUT(
-    KC_ESC,     KC_1,           KC_2,          KC_3,            KC_4,           KC_5,                                               KC_6,           KC_7,       KC_8,           KC_9,       KC_0,       KC_MINS,
-    KC_TAB,     KC_Q,           TD(DANCE_W),   KC_E,            KC_R,           TD(DANCE_T),                                        KC_Y,           KC_U,       TD(DANCE_I),    KC_O,       KC_P,       KC_BSPC,
-    KC_F15,     TD(DANCE_A),    TD(DANCE_S),   TD(DANCE_D),     TD(DANCE_F),    KC_G,                                               KC_H,           KC_J,       KC_K,           KC_L,       KC_SCLN,    KC_QUOT,
-    KC_LSFT,    TD(DANCE_Z),    TD(DANCE_X),   TD(DANCE_C),     TD(DANCE_V),    KC_B,          KC_END,           KC_HOME,           TD(DANCE_N),    KC_M,       KC_COMM,        KC_DOT,     KC_SLSH,    KC_LSFT,
-                                KC_LCTL,       OSL(_FUNCPAD),   KC_BSPC,        KC_SPC,        TD(DANCE_ENT),    TD(DANCE_ENT),     KC_SPC,         KC_BSPC,    OSL(_FUNCPAD),  KC_NO
+    KC_ESC,                 KC_1,           KC_2,          KC_3,            KC_4,           KC_5,                                               KC_6,           KC_7,       KC_8,           KC_9,       KC_0,       KC_MINS,
+    KC_TAB,                 KC_Q,           TD(DANCE_W),   KC_E,            KC_R,           TD(DANCE_T),                                        KC_Y,           KC_U,       TD(DANCE_I),    KC_O,       KC_P,       KC_BSPC,
+    KC_F15,                 TD(DANCE_A),    TD(DANCE_S),   TD(DANCE_D),     TD(DANCE_F),    KC_G,                                               KC_H,           KC_J,       KC_K,           KC_L,       KC_SCLN,    KC_QUOT,
+    MO(_FUNCPAD),           TD(DANCE_Z),    TD(DANCE_X),   TD(DANCE_C),     TD(DANCE_V),    KC_B,          KC_END,           KC_HOME,           TD(DANCE_N),    KC_M,       KC_COMM,        KC_DOT,     KC_SLSH,    KC_LSFT,
+                                            KC_NO,         KC_NO,           KC_BSPC,        KC_SPC,        TD(DANCE_ENT),    TD(DANCE_ENT),     KC_SPC,         KC_BSPC,    KC_NO,          KC_NO
 ),
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Illustrator Layer
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
   [_ILSTR] = LAYOUT(
-    TD(DANCE_ESC),  TD(DANCE_1),    TD(DANCE_2),    TD(DANCE_3),    KC_4,           TD(DANCE_5),                                    KC_6,           TD(DANCE_7),    TD(DANCE_8),    KC_9,           TD(DANCE_0),    KC_MINS,
-    KC_TAB,         KC_Q,           TD(DANCE_W),    TD(DANCE_E),    KC_R,           TD(DANCE_T),                                    TD(DANCE_Y),    KC_U,           TD(DANCE_I),    TD(DANCE_O),    TD(DANCE_P),    KC_BSPC,
-    KC_F15,         TD(DANCE_A),    TD(DANCE_S),    TD(DANCE_D),    TD(DANCE_F),    TD(DANCE_G),                                    TD(DANCE_H),    TD(DANCE_J),    TD(DANCE_K),    TD(DANCE_L),    KC_SCLN,        KC_QUOT,
-    KC_LSFT,        TD(DANCE_Z),    TD(DANCE_X),    TD(DANCE_C),    TD(DANCE_V),    TD(DANCE_B),    KC_ARTBRD,      KC_LAYER,       TD(DANCE_N),    KC_M,           KC_COMM,        KC_DOT,         KC_SLSH,        KC_LSFT,
-                                    KC_LCTL,        OSL(_FUNCPAD),  KC_BSPC,        KC_SPC,         TD(DANCE_ENT),  TD(DANCE_ENT),  KC_SPC,         KC_BSPC,        OSL(_FUNCPAD),  KC_NO
+    TD(DANCE_ESC),              TD(DANCE_1),    TD(DANCE_2),    TD(DANCE_3),    KC_4,           TD(DANCE_5),                                    KC_6,           TD(DANCE_7),    TD(DANCE_8),    KC_9,           TD(DANCE_0),    KC_MINS,
+    KC_TAB,                     KC_Q,           TD(DANCE_W),    TD(DANCE_E),    KC_R,           TD(DANCE_T),                                    TD(DANCE_Y),    KC_U,           TD(DANCE_I),    TD(DANCE_O),    TD(DANCE_P),    KC_BSPC,
+    KC_F15,                     TD(DANCE_A),    TD(DANCE_S),    TD(DANCE_D),    TD(DANCE_F),    TD(DANCE_G),                                    TD(DANCE_H),    TD(DANCE_J),    TD(DANCE_K),    TD(DANCE_L),    KC_SCLN,        KC_QUOT,
+    MO(_FUNCPAD),               TD(DANCE_Z),    TD(DANCE_X),    TD(DANCE_C),    TD(DANCE_V),    TD(DANCE_B),    KC_ARTBRD,      KC_LAYER,       TD(DANCE_N),    KC_M,           KC_COMM,        KC_DOT,         KC_SLSH,        KC_LSFT,
+                                                KC_NO,          KC_NO,          KC_BSPC,        KC_SPC,         TD(DANCE_ENT),  TD(DANCE_ENT),  KC_SPC,         KC_BSPC,        KC_NO,          KC_NO
 ),
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Left Hand Layer
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  [_LFTHND] = LAYOUT(
-  TD(DANCE_ESC),   KC_6,            TD(DANCE_7),    TD(DANCE_8),    KC_9,           TD(DANCE_0),                                    KC_6,          TD(DANCE_7),  TD(DANCE_8),       KC_9,           TD(DANCE_0),    KC_MINS,
-  KC_TAB,          TD(DANCE_Y),     KC_U,           TD(DANCE_I),    TD(DANCE_O),    TD(DANCE_P),                                    TD(DANCE_Y),   KC_U,         TD(DANCE_I),       TD(DANCE_O),    TD(DANCE_P),    KC_BSPC,
-  KC_F15,          TD(DANCE_H),     TD(DANCE_J),    TD(DANCE_K),    TD(DANCE_L),    KC_SCLN,                                        TD(DANCE_H),   TD(DANCE_J),  TD(DANCE_K),       TD(DANCE_L),    KC_SCLN,        KC_QUOT,
-  KC_LSFT,         TD(DANCE_N),     KC_M,           KC_COMM,        KC_DOT,         KC_SLSH,        KC_LAYER,       KC_LAYER,       TD(DANCE_N),   KC_M,         KC_COMM,           KC_DOT,         KC_SLSH,        KC_LSFT,
-                                    KC_LCTL,        OSL(_FUNCPAD),  KC_BSPC,        KC_SPC,         TD(DANCE_ENT),  TD(DANCE_ENT),  KC_SPC,        KC_BSPC,      OSL(_FUNCPAD),     KC_NO
+  [_SWITCH] = LAYOUT(
+    TD(DANCE_ESC),   KC_6,              TD(DANCE_7),    TD(DANCE_8),    KC_9,           TD(DANCE_0),                                    KC_6,          TD(DANCE_7),  TD(DANCE_8),       KC_9,           TD(DANCE_0),    KC_MINS,
+    KC_TAB,          TD(DANCE_Y),       KC_U,           TD(DANCE_I),    TD(DANCE_O),    TD(DANCE_P),                                    TD(DANCE_Y),   KC_U,         TD(DANCE_I),       TD(DANCE_O),    TD(DANCE_P),    KC_BSPC,
+    KC_F15,          TD(DANCE_H),       TD(DANCE_J),    TD(DANCE_K),    TD(DANCE_L),    KC_SCLN,                                        TD(DANCE_H),   TD(DANCE_J),  TD(DANCE_K),       TD(DANCE_L),    KC_SCLN,        KC_QUOT,
+    KC_LSFT,         TD(DANCE_N),       KC_M,           KC_COMM,        KC_DOT,         KC_SLSH,        KC_LAYER,       KC_LAYER,       TD(DANCE_N),   KC_M,         KC_COMM,           KC_DOT,         KC_SLSH,        KC_LSFT,
+                                        KC_NO,          KC_NO,          KC_BSPC,        KC_SPC,         TD(DANCE_ENT),  TD(DANCE_ENT),  KC_SPC,        KC_BSPC,      KC_NO,             KC_NO
 ),
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Function Layer
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2142,20 +2083,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_ESC,     TD(DANCE_F1),   TD(DANCE_F2),   TD(DANCE_F3),   TD(DANCE_F4),   TD(DANCE_F5),                           KC_EQL,     KC_NO,  KC_NO,  KC_NO,   KC_NO,   KC_NO,
     KC_TAB,     TD(DANCE_F6),   TD(DANCE_F7),   TD(DANCE_F8),   TD(DANCE_F9),   TD(DANCE_F10),                          KC_SLSH,    KC_7,   KC_8,   KC_9,    KC_NO,   KC_BSPC,
     KC_NO,      TD(DANCE_F11),  KC_NO,          KC_UP,          KC_NO,          TD(DANCE_F12),                          KC_MINS,    KC_4,   KC_5,   KC_6,    KC_NO,   KC_DEL,
-    KC_LSFT,    KC_NO,          KC_LEFT,        KC_DOWN,        KC_RIGHT,       KC_NO,          KC_NO,      KC_NO,      KC_PLUS,    KC_1,   KC_2,   KC_3,    KC_NO,   KC_RSFT,
-                                QK_BOOT,        _______,        _______,        KC_SPC,         KC_ENT,     KC_ENT,     KC_SPC,     KC_0,   KC_0,   KC_DOT
+    KC_NO,      KC_NO,          KC_LEFT,        KC_DOWN,        KC_RIGHT,       KC_NO,          KC_NO,      KC_NO,      KC_PLUS,    KC_1,   KC_2,   KC_3,    KC_NO,   KC_NO,
+                                QK_BOOT,        KC_NO,          KC_BSPC,        KC_SPC,         KC_ENT,     KC_ENT,     KC_SPC,     KC_0,   KC_0,   KC_DOT
 ),
 
 };
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // OLED Functions
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifdef OLED_ENABLE
-
 // Cool Images
-static void render_logo(void) {
+void render_logo(void) {
     static const char PROGMEM qmk_logo[] = {
         0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89, 0x8A, 0x8B, 0x8C, 0x8D, 0x8E, 0x8F, 0x90, 0x91, 0x92, 0x93, 0x94,
         0xA0, 0xA1, 0xA2, 0xA3, 0xA4, 0xA5, 0xA6, 0xA7, 0xA8, 0xA9, 0xAA, 0xAB, 0xAC, 0xAD, 0xAE, 0xAF, 0xB0, 0xB1, 0xB2, 0xB3, 0xB4,
@@ -2165,7 +2105,7 @@ static void render_logo(void) {
     oled_write_P(qmk_logo, false);
 }
 
-static void render_qwerty(void) {
+void render_qwerty(void) {
     static const char PROGMEM qwerty_logo[] = {
         // 'QWERTY', 128x32px
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -2205,7 +2145,7 @@ static void render_qwerty(void) {
     oled_write_raw_P(qwerty_logo, sizeof(qwerty_logo));
 }
 
-static void render_illstr(void) {
+void render_illstr(void) {
     static const char PROGMEM ilstr_logo[] = {
         // 'ILLUSTRATOR', 128x32px
         0x00, 0x00, 0x00, 0xe0, 0xe0, 0xe0, 0xe0, 0x00, 0x00, 0xe0, 0xe0, 0xe0, 0xe0, 0x00, 0x00, 0x00,
@@ -2245,7 +2185,7 @@ static void render_illstr(void) {
     oled_write_raw_P(ilstr_logo, sizeof(ilstr_logo));
 }
 
-static void render_funct(void) {
+void render_funct(void) {
     static const char PROGMEM func_logo[] = {
         // 'FUNCTION', 128x32px
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0,
@@ -2285,7 +2225,7 @@ static void render_funct(void) {
     oled_write_raw_P(func_logo, sizeof(func_logo));
 }
 
-static void render_lfthand(void) {
+void render_lfthand(void) {
     static const char PROGMEM lfthand_logo[] = {
         // 'SWTICH', 128x32px
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -2325,7 +2265,7 @@ static void render_lfthand(void) {
     oled_write_raw_P(lfthand_logo, sizeof(lfthand_logo));
 }
 
-static void print_status_logo(void) {
+void print_status_logo(void) {
     oled_clear();
 
     switch (get_highest_layer(layer_state)) {
@@ -2335,7 +2275,7 @@ static void print_status_logo(void) {
         case _ILSTR:
             render_illstr();
             break;
-        case _LFTHND:
+        case _SWITCH:
             render_lfthand();
             break;
         case _FUNCPAD:
@@ -2366,18 +2306,54 @@ bool oled_task_user(void) {
     return false;
 }
 
-#endif
-
-#ifdef ENCODER_ENABLE
-
-#if defined(ENCODER_MAP_ENABLE)
-const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][2] = {
-    [_QWERTY] =     { ENCODER_CCW_CW(KC_MS_WH_UP, KC_MS_WH_DOWN), ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
-    [_FUNCPAD] =    { ENCODER_CCW_CW(KC_MS_WH_UP, KC_MS_WH_DOWN), ENCODER_CCW_CW(KC_VOLD, KC_VOLU)  },
-    [_ILSTR] =      { ENCODER_CCW_CW(RGB_VAD, RGB_VAI),           ENCODER_CCW_CW(RGB_SPD, RGB_SPI)  },
-    [_LFTHND] =     { ENCODER_CCW_CW(RGB_RMOD, RGB_MOD),          ENCODER_CCW_CW(KC_RIGHT, KC_LEFT) },
-    //                  Encoder 1                                     Encoder 2
+tap_dance_action_t tap_dance_actions[] = {
+        [DANCE_ESC] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_ESC, dance_ESC_finished, dance_ESC_reset),
+        [DANCE_ENT] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_ENT, dance_ENT_finished, dance_ENT_reset),
+        [DANCE_MINS] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_MINS, dance_MINS_finished, dance_MINS_reset),
+        [DANCE_EQL] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_EQL, dance_EQL_finished, dance_EQL_reset),
+        [DANCE_LBRC] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_LBRC, dance_LBRC_finished, dance_LBRC_reset),
+        [DANCE_RBRC] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_RBRC, dance_RBRC_finished, dance_RBRC_reset),
+        [DANCE_F1] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_F1, dance_F1_finished, dance_F1_reset),
+        [DANCE_F2] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_F2, dance_F2_finished, dance_F2_reset),
+        [DANCE_F3] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_F3, dance_F3_finished, dance_F3_reset),
+        [DANCE_F4] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_F4, dance_F4_finished, dance_F4_reset),
+        [DANCE_F5] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_F5, dance_F5_finished, dance_F5_reset),
+        [DANCE_F6] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_F6, dance_F6_finished, dance_F6_reset),
+        [DANCE_F7] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_F7, dance_F7_finished, dance_F7_reset),
+        [DANCE_F8] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_F8, dance_F8_finished, dance_F8_reset),
+        [DANCE_F9] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_F9, dance_F9_finished, dance_F9_reset),
+        [DANCE_F10] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_F10, dance_F10_finished, dance_F10_reset),
+        [DANCE_F11] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_F11, dance_F11_finished, dance_F11_reset),
+        [DANCE_F12] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_F12, dance_F12_finished, dance_F12_reset),
+        [DANCE_0] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_0, dance_0_finished, dance_0_reset),
+        [DANCE_1] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_1, dance_1_finished, dance_1_reset),
+        [DANCE_2] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_2, dance_2_finished, dance_2_reset),
+        [DANCE_3] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_3, dance_3_finished, dance_3_reset),
+        [DANCE_5] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_5, dance_5_finished, dance_5_reset),
+        [DANCE_7] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_7, dance_7_finished, dance_7_reset),
+        [DANCE_8] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_8, dance_8_finished, dance_8_reset),
+        [DANCE_A] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_A, dance_A_finished, dance_A_reset),
+        [DANCE_B] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_B, dance_B_finished, dance_B_reset),
+        [DANCE_C] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_C, dance_C_finished, dance_C_reset),
+        [DANCE_D] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_D, dance_D_finished, dance_D_reset),
+        [DANCE_E] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_E, dance_E_finished, dance_E_reset),
+        [DANCE_F] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_F, dance_F_finished, dance_F_reset),
+        [DANCE_G] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_G, dance_G_finished, dance_G_reset),
+        [DANCE_H] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_H, dance_H_finished, dance_H_reset),
+        [DANCE_I] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_I, dance_I_finished, dance_I_reset),
+        [DANCE_J] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_J, dance_J_finished, dance_J_reset),
+        [DANCE_K] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_K, dance_K_finished, dance_K_reset),
+        [DANCE_L] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_L, dance_L_finished, dance_L_reset),
+        [DANCE_N] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_N, dance_N_finished, dance_N_reset),
+        [DANCE_O] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_O, dance_O_finished, dance_O_reset),
+        [DANCE_P] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_P, dance_P_finished, dance_P_reset),
+        [DANCE_Q] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_Q, dance_Q_finished, dance_Q_reset),
+        [DANCE_R] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_R, dance_R_finished, dance_R_reset),
+        [DANCE_S] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_S, dance_S_finished, dance_S_reset),
+        [DANCE_T] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_T, dance_T_finished, dance_T_reset),
+        [DANCE_V] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_V, dance_V_finished, dance_V_reset),
+        [DANCE_W] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_W, dance_W_finished, dance_W_reset),
+        [DANCE_X] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_X, dance_X_finished, dance_X_reset),
+        [DANCE_Y] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_Y, dance_Y_finished, dance_Y_reset),
+        [DANCE_Z] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_Z, dance_Z_finished, dance_Z_reset),
 };
-#endif
-
-#endif
