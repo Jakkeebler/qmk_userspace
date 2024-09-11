@@ -2150,11 +2150,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // Qwerty Layer
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
   [_QWERTY] = LAYOUT(
-    KC_ESC,                 KC_1,           KC_2,          KC_3,            KC_4,           KC_5,                                               KC_6,           KC_7,       KC_8,           KC_9,       KC_0,       KC_MINS,
-    KC_TAB,                 KC_Q,           TD(DANCE_W),   KC_E,            KC_R,           TD(DANCE_T),                                        KC_Y,           KC_U,       TD(DANCE_I),    KC_O,       KC_P,       KC_BSPC,
-    KC_F15,                 TD(DANCE_A),    TD(DANCE_S),   TD(DANCE_D),     TD(DANCE_F),    KC_G,                                               KC_H,           KC_J,       KC_K,           KC_L,       KC_SCLN,    KC_QUOT,
-    MO(_FUNCPAD),           TD(DANCE_Z),    TD(DANCE_X),   TD(DANCE_C),     TD(DANCE_V),    KC_B,          KC_END,           KC_HOME,           TD(DANCE_N),    KC_M,       KC_COMM,        KC_DOT,     KC_SLSH,    KC_LSFT,
-                                            KC_NO,         KC_NO,           KC_BSPC,        KC_SPC,        TD(DANCE_ENT),    TD(DANCE_ENT),     KC_SPC,         KC_BSPC,    KC_NO,          KC_NO
+    KC_ESC,                 KC_1,           KC_2,           KC_3,            KC_4,           KC_5,                                               KC_6,           KC_7,       KC_8,           KC_9,       KC_0,       KC_MINS,
+    KC_TAB,                 KC_Q,           TD(DANCE_W),    KC_E,            KC_R,           TD(DANCE_T),                                        KC_Y,           KC_U,       TD(DANCE_I),    KC_O,       KC_P,       KC_BSPC,
+    KC_F15,                 TD(DANCE_A),    TD(DANCE_S),    TD(DANCE_D),     TD(DANCE_F),    KC_G,                                               KC_H,           KC_J,       KC_K,           KC_L,       KC_SCLN,    KC_QUOT,
+    MO(_FUNCPAD),           TD(DANCE_Z),    TD(DANCE_X),    TD(DANCE_C),     TD(DANCE_V),    KC_B,          KC_END,           KC_HOME,           TD(DANCE_N),    KC_M,       KC_COMM,        KC_DOT,     KC_SLSH,    KC_LSFT,
+                                            QK_BOOT,        KC_NO,           KC_BSPC,        KC_SPC,        TD(DANCE_ENT),    TD(DANCE_ENT),     KC_SPC,         KC_BSPC,    KC_NO,          KC_NO
 ),
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
