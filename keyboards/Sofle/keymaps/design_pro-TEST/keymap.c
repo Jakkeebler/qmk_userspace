@@ -20,6 +20,9 @@
 #include "print.h"
 
 #include QMK_KEYBOARD_H
+// #include "oled.h"
+// #include "encoders.h"
+// #include "tap_dance.h"
 
 // Layer Declaration
 enum sofle_layers {
