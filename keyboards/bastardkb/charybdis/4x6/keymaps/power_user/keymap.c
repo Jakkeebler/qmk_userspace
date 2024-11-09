@@ -31,10 +31,10 @@ enum charybdis_keymap_layers {
     LAYER_COLMAK,
     LAYER_ILLUSTRATOR,
     LAYER_ILSTR_FUNC,
-//     LAYER_ILSTR_SWITCH,
+    LAYER_ILSTR_SWITCH,
     LAYER_PHOTOSHOP,
     LAYER_PHTSHP_FUNC,
-//     LAYER_PHTSHP_SWITCH,
+    LAYER_PHTSHP_SWITCH,
     LAYER_INDESIGN,
     LAYER_INDS_FUNC,
     LAYER_CODING,
@@ -175,21 +175,27 @@ void on_dance_ESC(tap_dance_state_t *state, void *user_data) {
 void dance_ESC_finished(tap_dance_state_t *state, void *user_data) {
     dance_state[DANCE_ESC] = dance_step(state);
     switch (dance_state[DANCE_ESC]) {
-        case TD_SINGLE_TAP: register_code16(KC_ESC); break;
-        case TD_DOUBLE_TAP:
-            uint8_t current_layer = get_highest_layer(layer_state);
-            layer_off(current_layer);
-            layer_on(LAYER_BASE);
-            break;
-        default: break;
-    }
+          case TD_SINGLE_TAP: register_code16(KC_ESC); break;
+          case TD_SINGLE_HOLD:
+               layer_on(LAYER_QWERTY);
+               break;
+          case TD_DOUBLE_TAP:
+               uint8_t current_layer = get_highest_layer(layer_state);
+               layer_off(current_layer);
+               layer_on(LAYER_BASE);
+               break;
+          default: break;
+     }
 }
 
 void dance_ESC_reset(tap_dance_state_t *state, void *user_data) {
     wait_ms(10);
     switch (dance_state[DANCE_ESC]) {
-        case TD_SINGLE_TAP: unregister_code16(KC_ESC); break;
-        default: break;
+          case TD_SINGLE_TAP: unregister_code16(KC_ESC); break;
+          case TD_SINGLE_HOLD:
+               layer_off(LAYER_QWERTY);
+               break;
+          default: break;
     }
     dance_state[DANCE_ESC] = 0;
 }
@@ -2152,14 +2158,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                        KC_BTN2, KC_BTN1,        KC_DEL
      ),
 
-     // [LAYER_ILSTR_SWITCH] = LAYOUT(
-     //      TD(DANCE_ESC), KC_S,     KC_2,     KC_3,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
-     //      KC_TAB,        KC_Q,     KC_W,     KC_E,     KC_R,    KC_T,           KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
-     //      KC_LSFT,       KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
-     //      KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_LALT,
-     //                                         KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
-     //                                                   KC_BTN2, KC_BTN1,        KC_DEL
-     // ),
+     [LAYER_ILSTR_SWITCH] = LAYOUT(
+          TD(DANCE_ESC), KC_S,     KC_2,     KC_3,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
+          KC_TAB,        KC_Q,     KC_W,     KC_E,     KC_R,    KC_T,           KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
+          KC_LSFT,       KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
+          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_LALT,
+                                             KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
+                                                       KC_BTN2, KC_BTN1,        KC_DEL
+     ),
 
      [LAYER_PHOTOSHOP] = LAYOUT(
           TD(DANCE_ESC), KC_1,     KC_P,     KC_3,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
@@ -2179,14 +2185,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                        KC_BTN2, KC_BTN1,        KC_DEL
      ),
 
-     // [LAYER_PHTSHP_SWITCH] = LAYOUT(
-     //      TD(DANCE_ESC), KC_1,     KC_S,     KC_3,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
-     //      KC_TAB,        KC_Q,     KC_W,     KC_E,     KC_R,    KC_T,           KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
-     //      KC_LSFT,       KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
-     //      KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_LALT,
-     //                                         KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
-     //                                                   KC_BTN2, KC_BTN1,        KC_DEL
-     // ),
+     [LAYER_PHTSHP_SWITCH] = LAYOUT(
+          TD(DANCE_ESC), KC_1,     KC_S,     KC_3,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
+          KC_TAB,        KC_Q,     KC_W,     KC_E,     KC_R,    KC_T,           KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
+          KC_LSFT,       KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
+          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_LALT,
+                                             KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
+                                                       KC_BTN2, KC_BTN1,        KC_DEL
+     ),
 
      [LAYER_INDESIGN] = LAYOUT(
           TD(DANCE_ESC), KC_1,     KC_2,     KC_I,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
@@ -2257,7 +2263,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //                            ╰───────────────────────────╯ ╰──────────────────╯
   ),
 };
+
 // clang-format on
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Mouse
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef POINTING_DEVICE_ENABLE
 #    ifdef CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_ENABLE
@@ -2294,10 +2305,18 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 #    endif // CHARYBDIS_AUTO_SNIPING_ON_LAYER
 #endif     // POINTING_DEVICE_ENABLE
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// RGB
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #ifdef RGB_MATRIX_ENABLE
 // Forward-declare this helper function since it is defined in rgb_matrix.c.
 void rgb_matrix_update_pwm_buffers(void);
 #endif
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Tap Dance
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 tap_dance_action_t tap_dance_actions[] = {
         [DANCE_ESC] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_ESC, dance_ESC_finished, dance_ESC_reset),

@@ -16,6 +16,8 @@
  */
 #pragma once
 
+#define LAYER_STATE_32BIT
+
 #ifdef VIA_ENABLE
 /* VIA configuration. */
 #    define DYNAMIC_KEYMAP_LAYER_COUNT 10
