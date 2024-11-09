@@ -1,74 +1,75 @@
-/* Copyright 2024 Jeron Kuxhausen
-  *
-  * This program is free software: you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-  * the Free Software Foundation, either version 2 of the License, or
-  * (at your option) any later version.
-  *
-  * This program is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU General Public License for more details.
-  *
-  * You should have received a copy of the GNU General Public License
-  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  */
-  // SOFLE RGB
-#include <stdio.h>
-
-// For Debugging
-#include "print.h"
-
+/**
+ * Copyright 2021 Charly Delay <charly@codesink.dev> (@0xcharly)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 #include QMK_KEYBOARD_H
 
-// Layer Declaration
-enum sofle_layers {
-    _QWERTY,
-    _ILSTR,
-    _SWITCH,
-    _FUNCPAD,
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Mouse
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#ifdef CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_ENABLE
+#    include "timer.h"
+#endif // CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_ENABLE
+
+enum charybdis_keymap_layers {
+    LAYER_BASE = 0,
+    LAYER_QWERTY,
+    LAYER_DVORAK,
+    LAYER_COLMAK,
+    LAYER_ILLUSTRATOR,
+    LAYER_ILSTR_FUNC,
+//     LAYER_ILSTR_SWITCH,
+    LAYER_PHOTOSHOP,
+    LAYER_PHTSHP_FUNC,
+//     LAYER_PHTSHP_SWITCH,
+    LAYER_INDESIGN,
+    LAYER_INDS_FUNC,
+    LAYER_CODING,
+    LAYER_VIM,
+    LAYER_MEDIA,
+    LAYER_SELECTOR,
+    LAYER_MOUSE,
 };
 
-// Custom Keycodes Declaration
-enum custom_keycodes {
-    KC_LAYER = SAFE_RANGE,
-    KC_ARTBRD,
-    KC_FUNC,
-};
+/** \brief Automatically enable sniping-mode on the pointer layer. */
+#define CHARYBDIS_AUTO_SNIPING_ON_LAYER LAYER_MOUSE
 
-// Custom Keycode Functions
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    switch (keycode) {
-        case KC_LAYER:
-            if (record->event.pressed) {
-                register_code(KC_LCTL);
-                register_code(KC_LSFT);
-                register_code(KC_LBRC);
-            } else {
-                unregister_code(KC_LBRC);
-                unregister_code(KC_LSFT);
-                unregister_code(KC_LCTL);
-            }
-            return false;
-        case KC_ARTBRD:
-            if (record->event.pressed) {
-                register_code(KC_LCTL);
-                register_code(KC_0);
-            } else {
-                unregister_code(KC_0);
-                unregister_code(KC_LCTL);
-            }
-            return false;
-        case KC_FUNC:
-            if (record->event.pressed) {
-                layer_on(_FUNCPAD);
-            } else {
-                layer_off(_FUNCPAD);
-            }
-            return false;
-    }
-    return true;
-}
+#ifdef CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_ENABLE
+static uint16_t auto_pointer_layer_timer = 0;
+
+#    ifndef CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_TIMEOUT_MS
+#        define CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_TIMEOUT_MS 1000
+#    endif // CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_TIMEOUT_MS
+
+#    ifndef CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD
+#        define CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD 8
+#    endif // CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD
+#endif     // CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_ENABLE
+
+// #define LOWER MO(LAYER_LOWER)
+// #define RAISE MO(LAYER_RAISE)
+// #define PT_Z LT(LAYER_MOUSE, KC_Z)
+// #define PT_SLSH LT(LAYER_MOUSE, KC_SLSH)
+
+#ifndef POINTING_DEVICE_ENABLE
+#    define DRGSCRL KC_NO
+#    define DPI_MOD KC_NO
+#    define S_D_MOD KC_NO
+#    define SNIPING KC_NO
+#endif // !POINTING_DEVICE_ENABLE
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Dance Declarations
@@ -124,7 +125,6 @@ enum {
     DANCE_X,
     DANCE_Y,
     DANCE_Z,
-    DANCE_FUNCPAD,
     TAP_DANCE_COUNT
 };
 
@@ -176,13 +176,10 @@ void dance_ESC_finished(tap_dance_state_t *state, void *user_data) {
     dance_state[DANCE_ESC] = dance_step(state);
     switch (dance_state[DANCE_ESC]) {
         case TD_SINGLE_TAP: register_code16(KC_ESC); break;
-        case TD_SINGLE_HOLD:
-            layer_on(_SWITCH);
-            break;
         case TD_DOUBLE_TAP:
             uint8_t current_layer = get_highest_layer(layer_state);
             layer_off(current_layer);
-            layer_on(_QWERTY);
+            layer_on(LAYER_BASE);
             break;
         default: break;
     }
@@ -192,9 +189,6 @@ void dance_ESC_reset(tap_dance_state_t *state, void *user_data) {
     wait_ms(10);
     switch (dance_state[DANCE_ESC]) {
         case TD_SINGLE_TAP: unregister_code16(KC_ESC); break;
-        case TD_SINGLE_HOLD:
-            layer_off(_SWITCH);
-            break;
         default: break;
     }
     dance_state[DANCE_ESC] = 0;
@@ -209,9 +203,6 @@ void dance_ENT_finished(tap_dance_state_t *state, void *user_data) {
     dance_state[DANCE_ENT] = dance_step(state);
     switch (dance_state[DANCE_ENT]) {
         case TD_SINGLE_TAP: register_code16(KC_ENT); break;
-        case TD_SINGLE_HOLD:
-            register_code(KC_LSFT);
-            break;
         default: break;
     }
 }
@@ -220,9 +211,6 @@ void dance_ENT_reset(tap_dance_state_t *state, void *user_data) {
     wait_ms(10);
     switch (dance_state[DANCE_ENT]) {
         case TD_SINGLE_TAP: unregister_code16(KC_ENT); break;
-        case TD_SINGLE_HOLD:
-            unregister_code(KC_LSFT);
-            break;
         default: break;
     }
     dance_state[DANCE_ENT] = 0;
@@ -1510,9 +1498,6 @@ void dance_I_finished(tap_dance_state_t *state, void *user_data) {
     dance_state[DANCE_I] = dance_step(state);
     switch (dance_state[DANCE_I]) {
         case TD_SINGLE_TAP: register_code16(KC_I); break;
-        case TD_SINGLE_HOLD:
-            layer_on(_ILSTR);
-            break;
         case TD_DOUBLE_TAP:
             register_code(KC_LCTL);
             register_code(KC_LSFT);
@@ -2108,422 +2093,211 @@ void dance_Z_reset(tap_dance_state_t *state, void *user_data) {
     dance_state[DANCE_Z] = 0;
 }
 
-// Dance FUNCPAD
-void on_dance_FUNCPAD(tap_dance_state_t *state, void *user_data) {
-    // Used for Immediate Actions
-}
-
-void dance_FUNCPAD_finished(tap_dance_state_t *state, void *user_data) {
-    dance_state[DANCE_FUNCPAD] = dance_step(state);
-    switch (dance_state[DANCE_FUNCPAD]) {
-        case TD_SINGLE_TAP:
-            set_oneshot_layer(_FUNCPAD, ONESHOT_START);
-            break;
-        case TD_SINGLE_HOLD:
-            layer_on(_FUNCPAD);
-            break;
-        case TD_DOUBLE_TAP:
-            uint8_t current_layer = get_highest_layer(layer_state);
-            if (current_layer != _FUNCPAD) {
-                layer_off(current_layer);
-            }
-            layer_on(_FUNCPAD);
-            break;
-        default: break;
-    }
-}
-
-void dance_FUNCPAD_reset(tap_dance_state_t *state, void *user_data) {
-    wait_ms(10);
-    switch (dance_state[DANCE_FUNCPAD]) {
-        case TD_SINGLE_HOLD:
-            layer_off(_FUNCPAD);
-            break;
-        default: break;
-    }
-    dance_state[DANCE_FUNCPAD] = 0;
-}
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Keymaps
+// Layers
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Qwerty Layer
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  [_QWERTY] = LAYOUT(
-    KC_ESC,                 KC_1,           KC_2,          KC_3,            KC_4,           KC_5,                                               KC_6,           KC_7,       KC_8,           KC_9,       KC_0,       KC_MINS,
-    KC_TAB,                 KC_Q,           TD(DANCE_W),   KC_E,            KC_R,           TD(DANCE_T),                                        KC_Y,           KC_U,       TD(DANCE_I),    KC_O,       KC_P,       KC_BSPC,
-    KC_F15,                 TD(DANCE_A),    TD(DANCE_S),   TD(DANCE_D),     TD(DANCE_F),    KC_G,                                               KC_H,           KC_J,       KC_K,           KC_L,       KC_SCLN,    KC_QUOT,
-    MO(_FUNCPAD),           TD(DANCE_Z),    TD(DANCE_X),   TD(DANCE_C),     TD(DANCE_V),    KC_B,          KC_END,           KC_HOME,           TD(DANCE_N),    KC_M,       KC_COMM,        KC_DOT,     KC_SLSH,    KC_LSFT,
-                                            KC_NO,         KC_NO,           KC_BSPC,        KC_SPC,        TD(DANCE_ENT),    TD(DANCE_ENT),     KC_SPC,         KC_BSPC,    KC_NO,          KC_NO
-),
+     [LAYER_BASE] = LAYOUT(
+          TD(DANCE_ESC), KC_1,     KC_2,     KC_3,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
+          KC_TAB,        KC_Q,     KC_W,     KC_E,     KC_R,    KC_T,           KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
+          KC_LSFT,       KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
+          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_LALT,
+                                             KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
+                                                       KC_BTN2, KC_BTN1,        KC_DEL
+     ),
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Illustrator Layer
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  [_ILSTR] = LAYOUT(
-    TD(DANCE_ESC),              TD(DANCE_1),    TD(DANCE_2),    TD(DANCE_3),    KC_4,           TD(DANCE_5),                                    KC_6,           TD(DANCE_7),    TD(DANCE_8),    KC_9,           TD(DANCE_0),    KC_MINS,
-    KC_TAB,                     KC_Q,           TD(DANCE_W),    TD(DANCE_E),    KC_R,           TD(DANCE_T),                                    TD(DANCE_Y),    KC_U,           TD(DANCE_I),    TD(DANCE_O),    TD(DANCE_P),    KC_BSPC,
-    KC_F15,                     TD(DANCE_A),    TD(DANCE_S),    TD(DANCE_D),    TD(DANCE_F),    TD(DANCE_G),                                    TD(DANCE_H),    TD(DANCE_J),    TD(DANCE_K),    TD(DANCE_L),    KC_SCLN,        KC_QUOT,
-    MO(_FUNCPAD),               TD(DANCE_Z),    TD(DANCE_X),    TD(DANCE_C),    TD(DANCE_V),    TD(DANCE_B),    KC_ARTBRD,      KC_LAYER,       TD(DANCE_N),    KC_M,           KC_COMM,        KC_DOT,         KC_SLSH,        KC_LSFT,
-                                                KC_NO,          KC_NO,          KC_BSPC,        KC_SPC,         TD(DANCE_ENT),  TD(DANCE_ENT),  KC_SPC,         KC_BSPC,        KC_NO,          KC_NO
-),
+     [LAYER_QWERTY] = LAYOUT(
+          TD(DANCE_ESC), KC_1,     KC_2,     KC_3,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
+          KC_TAB,        KC_Q,     KC_W,     KC_E,     KC_R,    KC_T,           KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
+          KC_LSFT,       KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
+          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_LALT,
+                                             KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
+                                                       KC_BTN2, KC_BTN1,        KC_DEL
+     ),
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Left Hand Layer
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  [_SWITCH] = LAYOUT(
-    TD(DANCE_ESC),   KC_6,              TD(DANCE_7),    TD(DANCE_8),    KC_9,           TD(DANCE_0),                                    KC_6,          TD(DANCE_7),  TD(DANCE_8),       KC_9,           TD(DANCE_0),    KC_MINS,
-    KC_TAB,          TD(DANCE_Y),       KC_U,           TD(DANCE_I),    TD(DANCE_O),    TD(DANCE_P),                                    TD(DANCE_Y),   KC_U,         TD(DANCE_I),       TD(DANCE_O),    TD(DANCE_P),    KC_BSPC,
-    KC_F15,          TD(DANCE_H),       TD(DANCE_J),    TD(DANCE_K),    TD(DANCE_L),    KC_SCLN,                                        TD(DANCE_H),   TD(DANCE_J),  TD(DANCE_K),       TD(DANCE_L),    KC_SCLN,        KC_QUOT,
-    KC_LSFT,         TD(DANCE_N),       KC_M,           KC_COMM,        KC_DOT,         KC_SLSH,        KC_LAYER,       KC_LAYER,       TD(DANCE_N),   KC_M,         KC_COMM,           KC_DOT,         KC_SLSH,        KC_LSFT,
-                                        KC_NO,          KC_NO,          KC_BSPC,        KC_SPC,         TD(DANCE_ENT),  TD(DANCE_ENT),  KC_SPC,        KC_BSPC,      KC_NO,             KC_NO
-),
+     [LAYER_DVORAK] = LAYOUT(
+          TD(DANCE_ESC),      KC_1,       KC_2,        KC_3,     KC_4,    KC_5,           KC_6,    KC_7,   KC_8,   KC_9,   KC_0,       KC_RBRC,
+          KC_QUOT,            KC_COMM,    KC_DOT,      KC_P,     KC_Y,    KC_F,           KC_G,    KC_C,   KC_R,   KC_L,   KC_SLSH,    KC_EQL,
+          KC_A,               KC_O,       KC_E,        KC_U,     KC_I,    KC_D,           KC_H,    KC_T,   KC_N,   KC_S,   KC_MINS,     KC_NO,
+          KC_LSFT,            KC_SCLN,    KC_Q,        KC_J,     KC_K,    KC_X,           KC_B,    KC_M,   KC_W,   KC_V,   KC_Z,       KC_RSFT,
+                                                       KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
+                                                                 KC_BTN2, KC_BTN1,        KC_DEL
+     ),
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Function Layer
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-[_FUNCPAD] = LAYOUT(
-    KC_ESC,     TD(DANCE_F1),   TD(DANCE_F2),   TD(DANCE_F3),   TD(DANCE_F4),   TD(DANCE_F5),                           KC_EQL,     KC_NO,  KC_NO,  KC_NO,   KC_NO,   KC_NO,
-    KC_TAB,     TD(DANCE_F6),   TD(DANCE_F7),   TD(DANCE_F8),   TD(DANCE_F9),   TD(DANCE_F10),                          KC_SLSH,    KC_7,   KC_8,   KC_9,    KC_NO,   KC_BSPC,
-    KC_NO,      TD(DANCE_F11),  KC_NO,          KC_UP,          KC_NO,          TD(DANCE_F12),                          KC_MINS,    KC_4,   KC_5,   KC_6,    KC_NO,   KC_DEL,
-    KC_NO,      KC_NO,          KC_LEFT,        KC_DOWN,        KC_RIGHT,       KC_NO,          KC_NO,      KC_NO,      KC_PLUS,    KC_1,   KC_2,   KC_3,    KC_NO,   KC_NO,
-                                QK_BOOT,        KC_NO,          KC_BSPC,        KC_SPC,         KC_ENT,     KC_ENT,     KC_SPC,     KC_0,   KC_0,   KC_DOT
-),
+     [LAYER_COLMAK] = LAYOUT(
+        TD(DANCE_ESC),   KC_1,   KC_2,   KC_3,    KC_4,     KC_5,    KC_6,           KC_7,    KC_8,       KC_9,       KC_0,       KC_NO,
+        KC_TAB,          KC_Q,   KC_W,   KC_F,    KC_P,     KC_G,    KC_J,           KC_L,    KC_U,       KC_Y,       KC_SCLN,    KC_NO,
+        KC_F15,          KC_A,   KC_R,   KC_S,    KC_T,     KC_D,    KC_H,           KC_N,    KC_E,       KC_I,       KC_O,       KC_NO,
+        KC_LSFT,         KC_Z,   KC_X,   KC_V,    KC_B,     KC_K,    KC_M,           KC_COMM, KC_DOT,     KC_SLSH,    KC_NO,      KC_RSFT,
+                                                  KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
+                                                            KC_BTN2, KC_BTN1,        KC_DEL
+     ),
 
+     [LAYER_ILLUSTRATOR] = LAYOUT(
+          TD(DANCE_ESC), KC_I,     KC_2,     KC_3,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
+          KC_TAB,        KC_Q,     KC_W,     KC_E,     KC_R,    KC_T,           KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
+          KC_LSFT,       KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
+          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_LALT,
+                                             KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
+                                                       KC_BTN2, KC_BTN1,        KC_DEL
+     ),
+
+     [LAYER_ILSTR_FUNC] = LAYOUT(
+          TD(DANCE_ESC), KC_F,     KC_2,     KC_3,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
+          KC_TAB,        KC_Q,     KC_W,     KC_E,     KC_R,    KC_T,           KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
+          KC_LSFT,       KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
+          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_LALT,
+                                             KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
+                                                       KC_BTN2, KC_BTN1,        KC_DEL
+     ),
+
+     // [LAYER_ILSTR_SWITCH] = LAYOUT(
+     //      TD(DANCE_ESC), KC_S,     KC_2,     KC_3,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
+     //      KC_TAB,        KC_Q,     KC_W,     KC_E,     KC_R,    KC_T,           KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
+     //      KC_LSFT,       KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
+     //      KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_LALT,
+     //                                         KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
+     //                                                   KC_BTN2, KC_BTN1,        KC_DEL
+     // ),
+
+     [LAYER_PHOTOSHOP] = LAYOUT(
+          TD(DANCE_ESC), KC_1,     KC_P,     KC_3,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
+          KC_TAB,        KC_Q,     KC_W,     KC_E,     KC_R,    KC_T,           KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
+          KC_LSFT,       KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
+          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_LALT,
+                                             KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
+                                                       KC_BTN2, KC_BTN1,        KC_DEL
+     ),
+
+     [LAYER_PHTSHP_FUNC] = LAYOUT(
+          TD(DANCE_ESC), KC_1,     KC_F,     KC_3,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
+          KC_TAB,        KC_Q,     KC_W,     KC_E,     KC_R,    KC_T,           KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
+          KC_LSFT,       KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
+          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_LALT,
+                                             KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
+                                                       KC_BTN2, KC_BTN1,        KC_DEL
+     ),
+
+     // [LAYER_PHTSHP_SWITCH] = LAYOUT(
+     //      TD(DANCE_ESC), KC_1,     KC_S,     KC_3,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
+     //      KC_TAB,        KC_Q,     KC_W,     KC_E,     KC_R,    KC_T,           KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
+     //      KC_LSFT,       KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
+     //      KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_LALT,
+     //                                         KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
+     //                                                   KC_BTN2, KC_BTN1,        KC_DEL
+     // ),
+
+     [LAYER_INDESIGN] = LAYOUT(
+          TD(DANCE_ESC), KC_1,     KC_2,     KC_I,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
+          KC_TAB,        KC_Q,     KC_W,     KC_E,     KC_R,    KC_T,           KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
+          KC_LSFT,       KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
+          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_LALT,
+                                             KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
+                                                       KC_BTN2, KC_BTN1,        KC_DEL
+     ),
+
+     [LAYER_INDS_FUNC] = LAYOUT(
+          TD(DANCE_ESC), KC_1,     KC_2,     KC_F,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
+          KC_TAB,        KC_Q,     KC_W,     KC_E,     KC_R,    KC_T,           KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
+          KC_LSFT,       KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
+          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_LALT,
+                                             KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
+                                                       KC_BTN2, KC_BTN1,        KC_DEL
+     ),
+
+     [LAYER_CODING] = LAYOUT(
+          TD(DANCE_ESC), KC_C,     KC_2,     KC_3,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
+          KC_TAB,        KC_Q,     KC_W,     KC_E,     KC_R,    KC_T,           KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
+          KC_LSFT,       KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
+          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_LALT,
+                                             KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
+                                                       KC_BTN2, KC_BTN1,        KC_DEL
+     ),
+
+     [LAYER_VIM] = LAYOUT(
+          TD(DANCE_ESC), KC_V,     KC_2,     KC_3,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
+          KC_TAB,        KC_Q,     KC_W,     KC_E,     KC_R,    KC_T,           KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
+          KC_LSFT,       KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
+          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_LALT,
+                                             KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
+                                                       KC_BTN2, KC_BTN1,        KC_DEL
+     ),
+
+     [LAYER_MEDIA] = LAYOUT(
+          TD(DANCE_ESC), KC_M,     KC_2,     KC_3,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
+          KC_TAB,        KC_Q,     KC_W,     KC_E,     KC_R,    KC_T,           KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
+          KC_LSFT,       KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
+          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_LALT,
+                                             KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
+                                                       KC_BTN2, KC_BTN1,        KC_DEL
+     ),
+
+     [LAYER_SELECTOR] = LAYOUT(
+          TD(DANCE_ESC), KC_M,     KC_2,     KC_3,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
+          KC_TAB,        KC_Q,     KC_W,     KC_E,     KC_R,    KC_T,           KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
+          KC_LSFT,       KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
+          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_LALT,
+                                             KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
+                                                       KC_BTN2, KC_BTN1,        KC_DEL
+     ),
+
+  [LAYER_MOUSE] = LAYOUT(
+  // ╭──────────────────────────────────────────────────────╮ ╭──────────────────────────────────────────────────────╮
+       QK_BOOT,  EE_CLR, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT,  EE_CLR,
+  // ├──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────┤
+       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, DPI_MOD, S_D_MOD,    S_D_MOD, DPI_MOD, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+  // ├──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────┤
+       XXXXXXX, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,    XXXXXXX, KC_RSFT, KC_RCTL, KC_RALT, KC_RGUI, XXXXXXX,
+  // ├──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────┤
+       XXXXXXX, _______, DRGSCRL, SNIPING, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, SNIPING, DRGSCRL, _______, XXXXXXX,
+  // ╰──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────╯
+                                  KC_BTN2, KC_BTN1, KC_BTN3,    KC_BTN3, KC_BTN1,
+                                           XXXXXXX, KC_BTN2,    KC_BTN2
+  //                            ╰───────────────────────────╯ ╰──────────────────╯
+  ),
 };
+// clang-format on
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// OLED Functions
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// Cool Images
-static void render_logo(void) {
-    static const char PROGMEM qmk_logo[] = {
-        0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89, 0x8A, 0x8B, 0x8C, 0x8D, 0x8E, 0x8F, 0x90, 0x91, 0x92, 0x93, 0x94,
-        0xA0, 0xA1, 0xA2, 0xA3, 0xA4, 0xA5, 0xA6, 0xA7, 0xA8, 0xA9, 0xAA, 0xAB, 0xAC, 0xAD, 0xAE, 0xAF, 0xB0, 0xB1, 0xB2, 0xB3, 0xB4,
-        0xC0, 0xC1, 0xC2, 0xC3, 0xC4, 0xC5, 0xC6, 0xC7, 0xC8, 0xC9, 0xCA, 0xCB, 0xCC, 0xCD, 0xCE, 0xCF, 0xD0, 0xD1, 0xD2, 0xD3, 0xD4, 0x00
-    };
-
-    oled_write_P(qmk_logo, false);
+#ifdef POINTING_DEVICE_ENABLE
+#    ifdef CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_ENABLE
+report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
+    if (abs(mouse_report.x) > CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD || abs(mouse_report.y) > CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD) {
+        if (auto_pointer_layer_timer == 0) {
+            layer_on(LAYER_MOUSE);
+#        ifdef RGB_MATRIX_ENABLE
+            rgb_matrix_mode_noeeprom(RGB_MATRIX_NONE);
+            rgb_matrix_sethsv_noeeprom(HSV_GREEN);
+#        endif // RGB_MATRIX_ENABLE
+        }
+        auto_pointer_layer_timer = timer_read();
+    }
+    return mouse_report;
 }
 
-static void render_qwerty(void) {
-    static const char PROGMEM qwerty_logo[] = {
-        // 'QWERTY', 128x32px
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x80, 0xc0, 0xe0, 0xe0, 0xf0, 0xf0, 0xf0, 0xf0, 0xe0, 0xe0, 0xe0, 0xc0, 0x00, 0x00, 0x60, 0xe0,
-        0xe0, 0xe0, 0xe0, 0x00, 0x00, 0x00, 0xc0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0x00, 0x00, 0x00, 0xe0,
-        0xe0, 0xe0, 0xe0, 0x60, 0x00, 0x00, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0,
-        0xe0, 0x00, 0x00, 0x00, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xc0,
-        0x80, 0x00, 0x00, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0,
-        0x00, 0x00, 0x60, 0xe0, 0xe0, 0xe0, 0xe0, 0x80, 0x00, 0x00, 0x00, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xfe,
-        0xff, 0xff, 0xff, 0xff, 0x03, 0x00, 0x00, 0x01, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x1f,
-        0xff, 0xff, 0xff, 0xfe, 0x00, 0xe0, 0xff, 0xff, 0xff, 0x7f, 0xff, 0xff, 0xf0, 0x00, 0xfc, 0xff,
-        0xff, 0xff, 0x1f, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1,
-        0xe1, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xc1, 0xc1, 0xe1, 0xff, 0xff, 0xff, 0x7f,
-        0x3f, 0x00, 0x00, 0x01, 0x01, 0x01, 0x01, 0xff, 0xff, 0xff, 0xff, 0xff, 0x01, 0x01, 0x01, 0x01,
-        0x00, 0x00, 0x00, 0x03, 0x0f, 0x7f, 0xff, 0xff, 0xfc, 0xf8, 0xff, 0xff, 0x7f, 0x1f, 0x03, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3f,
-        0xff, 0xff, 0xff, 0xff, 0xe0, 0x80, 0x80, 0xc0, 0xff, 0xff, 0xff, 0xff, 0x7f, 0x00, 0x00, 0x00,
-        0x03, 0xff, 0xff, 0xff, 0xfc, 0xff, 0xff, 0xff, 0x00, 0x00, 0xff, 0xff, 0xff, 0xfc, 0xff, 0xff,
-        0xff, 0x07, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xc1, 0xc1, 0xc1, 0xc1, 0xc1,
-        0xc1, 0xc0, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0x03, 0x03, 0x03, 0xff, 0xff, 0xff, 0xff,
-        0xfe, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x03, 0x03, 0x03, 0x07, 0x07, 0x07, 0x07, 0x07, 0x0f, 0x1f, 0x1f, 0x0c, 0x08, 0x00, 0x00,
-        0x00, 0x00, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x00, 0x00, 0x01, 0x03, 0x03, 0x03, 0x03, 0x03,
-        0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03,
-        0x03, 0x03, 0x00, 0x00, 0x03, 0x03, 0x03, 0x03, 0x03, 0x00, 0x00, 0x00, 0x03, 0x03, 0x03, 0x03,
-        0x03, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x03, 0x03, 0x03, 0x03, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x03, 0x03, 0x03, 0x03, 0x03, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-    };
-
-    oled_write_raw_P(qwerty_logo, sizeof(qwerty_logo));
-}
-
-static void render_illstr(void) {
-    static const char PROGMEM ilstr_logo[] = {
-        // 'ILLUSTRATOR', 128x32px
-        0x00, 0x00, 0x00, 0xe0, 0xe0, 0xe0, 0xe0, 0x00, 0x00, 0xe0, 0xe0, 0xe0, 0xe0, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0xe0, 0xe0, 0xe0, 0xe0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xe0, 0xe0,
-        0xe0, 0xc0, 0x00, 0x00, 0xe0, 0xe0, 0xe0, 0xe0, 0x00, 0x00, 0x00, 0xc0, 0xe0, 0xe0, 0xe0, 0xe0,
-        0xe0, 0xc0, 0xc0, 0x00, 0x00, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xc0,
-        0x00, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xc0, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0x00, 0x00, 0x00, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0,
-        0xe0, 0xe0, 0xe0, 0x00, 0x00, 0x00, 0xc0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xc0, 0x80, 0x00,
-        0x00, 0xc0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xc0, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff,
-        0xff, 0xff, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x3f, 0xff, 0xff, 0xff, 0xf1, 0xe1,
-        0xcf, 0x8f, 0x0f, 0x0f, 0x00, 0x01, 0x03, 0x03, 0xff, 0xff, 0xff, 0xff, 0x03, 0x03, 0x03, 0x01,
-        0x00, 0xff, 0xff, 0xff, 0xff, 0xc1, 0xc1, 0xe3, 0xff, 0xff, 0x7f, 0x1e, 0x00, 0x00, 0x00, 0xc0,
-        0xff, 0xff, 0xff, 0x07, 0xff, 0xff, 0xfe, 0x80, 0x00, 0x03, 0x03, 0x03, 0xff, 0xff, 0xff, 0xff,
-        0x03, 0x03, 0x03, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x01, 0x01, 0x03, 0xff, 0xff, 0xff, 0xfe,
-        0x00, 0xff, 0xff, 0xff, 0xff, 0xc3, 0xc1, 0xc3, 0xff, 0xff, 0xff, 0x7f, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xc0, 0xc0, 0xc0,
-        0xc0, 0xc0, 0x00, 0xff, 0xff, 0xff, 0xff, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0x00, 0x00, 0xff, 0xff,
-        0xff, 0xff, 0x80, 0x80, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0xf0, 0xf0, 0xf1, 0xc3, 0x83, 0x87,
-        0xff, 0xff, 0xff, 0xfc, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0xff, 0xff, 0xff, 0xff, 0x03, 0x03, 0x0f, 0xff, 0xff, 0xfe, 0xfc, 0x00, 0x00, 0xf0, 0xff,
-        0xff, 0xff, 0x7d, 0x78, 0x7f, 0xff, 0xff, 0xff, 0xe0, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x80, 0x80, 0xc0, 0xff, 0xff, 0xff, 0x7f,
-        0x00, 0xff, 0xff, 0xff, 0xff, 0x07, 0x03, 0x07, 0xff, 0xff, 0xff, 0xfe, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x07, 0x07, 0x07, 0x07, 0x00, 0x00, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07,
-        0x07, 0x07, 0x00, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x00, 0x00, 0x01, 0x03,
-        0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x03, 0x01, 0x00, 0x00, 0x01, 0x03, 0x07, 0x07, 0x07, 0x07,
-        0x07, 0x07, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0x07, 0x07, 0x07, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x07, 0x07, 0x07, 0x07, 0x00, 0x00, 0x00, 0x07, 0x07, 0x07, 0x07, 0x00, 0x00, 0x07, 0x07,
-        0x07, 0x03, 0x00, 0x00, 0x00, 0x03, 0x07, 0x07, 0x07, 0x00, 0x00, 0x00, 0x07, 0x07, 0x07, 0x07,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x03, 0x01, 0x00,
-        0x00, 0x03, 0x07, 0x07, 0x07, 0x00, 0x00, 0x00, 0x07, 0x07, 0x07, 0x07, 0x00, 0x00, 0x00, 0x00
-    };
-
-    oled_write_raw_P(ilstr_logo, sizeof(ilstr_logo));
-}
-
-static void render_funct(void) {
-    static const char PROGMEM func_logo[] = {
-        // 'FUNCTION', 128x32px
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0,
-        0xe0, 0xe0, 0xe0, 0xc0, 0x00, 0x00, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0x00, 0x00, 0x00, 0xe0, 0xe0,
-        0xe0, 0xe0, 0xe0, 0x00, 0x00, 0xc0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0x00, 0x00, 0x00, 0xe0, 0xe0,
-        0xe0, 0xe0, 0xe0, 0x00, 0x00, 0x00, 0x80, 0xc0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0,
-        0xc0, 0x80, 0x00, 0x00, 0x00, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0,
-        0xe0, 0xc0, 0x00, 0x00, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0x00, 0x00, 0x00, 0x80, 0xc0, 0xe0, 0xe0,
-        0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xc0, 0xc0, 0x80, 0x00, 0x00, 0x00, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0,
-        0x80, 0x00, 0x00, 0xc0, 0xe0, 0xe0, 0xe0, 0xe0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xe3, 0xe3, 0xe3,
-        0xe3, 0xe3, 0xe3, 0x01, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0xff, 0xff,
-        0xff, 0xff, 0xff, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xf8, 0xc0, 0xff, 0xff,
-        0xff, 0xff, 0xff, 0x00, 0x00, 0xfe, 0xff, 0xff, 0xff, 0xff, 0x01, 0x01, 0x01, 0x03, 0x1f, 0x1f,
-        0x1f, 0x1f, 0x1e, 0x00, 0x00, 0x03, 0x03, 0x03, 0x03, 0xff, 0xff, 0xff, 0xff, 0xff, 0x03, 0x03,
-        0x03, 0x01, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff,
-        0x01, 0x01, 0x01, 0x07, 0xff, 0xff, 0xff, 0xff, 0xfc, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff,
-        0xff, 0xfc, 0xe0, 0x00, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0x03, 0x03, 0x03,
-        0x03, 0x03, 0x03, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0x80, 0x80, 0x80, 0xff, 0xff,
-        0xff, 0xff, 0xff, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0x01, 0x0f, 0x7f, 0xff, 0xff, 0xff,
-        0xff, 0xff, 0xff, 0x00, 0x00, 0x7f, 0xff, 0xff, 0xff, 0xff, 0x80, 0x80, 0x80, 0xc0, 0xfc, 0xfc,
-        0xfc, 0xfc, 0x7c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff,
-        0x80, 0x80, 0x80, 0xf0, 0xff, 0xff, 0xff, 0xff, 0x3f, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x00,
-        0x07, 0x3f, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0x07, 0x07, 0x07, 0x07, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x03, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07,
-        0x03, 0x03, 0x00, 0x00, 0x00, 0x03, 0x07, 0x07, 0x07, 0x07, 0x00, 0x00, 0x00, 0x03, 0x07, 0x07,
-        0x07, 0x07, 0x07, 0x00, 0x00, 0x00, 0x01, 0x03, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07,
-        0x03, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0x07, 0x07, 0x07, 0x03, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x07, 0x07, 0x07, 0x07, 0x07, 0x00, 0x00, 0x00, 0x01, 0x03, 0x07, 0x07,
-        0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x03, 0x01, 0x00, 0x00, 0x00, 0x07, 0x07, 0x07, 0x07, 0x02,
-        0x00, 0x00, 0x01, 0x07, 0x07, 0x07, 0x07, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-    };
-
-    oled_write_raw_P(func_logo, sizeof(func_logo));
-}
-
-static void render_lfthand(void) {
-    static const char PROGMEM lfthand_logo[] = {
-        // 'SWTICH', 128x32px
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0xc0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xc0, 0xc0, 0x80,
-        0x00, 0x00, 0xe0, 0xe0, 0xe0, 0xe0, 0xc0, 0x00, 0x00, 0x00, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0x00,
-        0x00, 0x00, 0xc0, 0xe0, 0xe0, 0xe0, 0xe0, 0x00, 0x00, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0x00, 0x00,
-        0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0x00, 0x00, 0x00,
-        0x80, 0xc0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0xc0, 0x80, 0x00, 0x00, 0x00, 0xe0,
-        0xe0, 0xe0, 0xe0, 0xe0, 0x00, 0x00, 0x00, 0xe0, 0xe0, 0xe0, 0xe0, 0xe0, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x3f, 0x7f, 0xff, 0xff, 0xff, 0xf1, 0xe1, 0xc1, 0xcf, 0x8f, 0x8f, 0x0f,
-        0x04, 0x00, 0x03, 0xff, 0xff, 0xff, 0xff, 0xc0, 0x00, 0xfc, 0xff, 0xff, 0x3f, 0xff, 0xff, 0xfe,
-        0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x07, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00,
-        0x01, 0x03, 0x03, 0x03, 0xff, 0xff, 0xff, 0xff, 0xff, 0x03, 0x03, 0x03, 0x03, 0x00, 0x00, 0xff,
-        0xff, 0xff, 0xff, 0xff, 0x01, 0x01, 0x01, 0x03, 0x1f, 0x1f, 0x1f, 0x1f, 0x1e, 0x00, 0x00, 0xff,
-        0xff, 0xff, 0xff, 0xff, 0xc0, 0xe0, 0xe0, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0xf0, 0xf0, 0xf0, 0xf1, 0xc3, 0x83, 0x87, 0x8f, 0xff, 0xff, 0xff, 0xfe,
-        0x38, 0x00, 0x00, 0x00, 0x3f, 0xff, 0xff, 0xff, 0xfc, 0xff, 0xff, 0x3f, 0x00, 0x1f, 0xff, 0xff,
-        0xff, 0xff, 0xff, 0xff, 0x7f, 0x01, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff,
-        0xff, 0xff, 0xff, 0xff, 0x80, 0x80, 0x80, 0xc0, 0xfc, 0xfc, 0xfc, 0xfc, 0x7c, 0x00, 0x00, 0xff,
-        0xff, 0xff, 0xff, 0xff, 0x03, 0x03, 0x03, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x01, 0x03, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x03, 0x01,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x00, 0x00, 0x00, 0x07, 0x07,
-        0x07, 0x07, 0x07, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0x07, 0x07, 0x07, 0x07, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x07, 0x07, 0x07, 0x07, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x01, 0x03, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x03, 0x01, 0x00, 0x00, 0x00, 0x07,
-        0x07, 0x07, 0x07, 0x07, 0x00, 0x00, 0x00, 0x07, 0x07, 0x07, 0x07, 0x07, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-    };
-
-    oled_write_raw_P(lfthand_logo, sizeof(lfthand_logo));
-}
-
-static void print_status_logo(void) {
-    oled_clear();
-
-    switch (get_highest_layer(layer_state)) {
-        case _QWERTY:
-            render_qwerty();
-            break;
-        case _ILSTR:
-            render_illstr();
-            break;
-        case _SWITCH:
-            render_lfthand();
-            break;
-        case _FUNCPAD:
-            render_funct();
-            break;
-        default:
-            render_logo();
-            break;
+void matrix_scan_user(void) {
+    if (auto_pointer_layer_timer != 0 && TIMER_DIFF_16(timer_read(), auto_pointer_layer_timer) >= CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_TIMEOUT_MS) {
+        auto_pointer_layer_timer = 0;
+        layer_off(LAYER_MOUSE);
+#        ifdef RGB_MATRIX_ENABLE
+        rgb_matrix_mode_noeeprom(RGB_MATRIX_DEFAULT_MODE);
+#        endif // RGB_MATRIX_ENABLE
     }
 }
+#    endif // CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_ENABLE
 
-oled_rotation_t oled_init_user(oled_rotation_t rotation) {
-    if (is_keyboard_master()) {
-        return OLED_ROTATION_0;
-    }
-    return rotation;
+#    ifdef CHARYBDIS_AUTO_SNIPING_ON_LAYER
+layer_state_t layer_state_set_user(layer_state_t state) {
+    charybdis_set_pointer_sniping_enabled(layer_state_cmp(state, CHARYBDIS_AUTO_SNIPING_ON_LAYER));
+    return state;
 }
+#    endif // CHARYBDIS_AUTO_SNIPING_ON_LAYER
+#endif     // POINTING_DEVICE_ENABLE
 
-bool oled_task_user(void) {
-    if (is_keyboard_master()) {
-        print_status_logo();
-        // print_status_narrow();
-    } else {
-        render_logo();
-        // print_status_logo();
-        // print_status_narrow();
-    }
-    return false;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Encoder Functions
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-bool encoder_update_user(uint8_t index, bool clockwise)
-{
-  // Print the current layer for debugging
-  printf("Current layer: %d\n", get_highest_layer(layer_state));
-
-  if (index == 0)
-  {
-    switch (get_highest_layer(layer_state)) {
-    case _QWERTY:
-    case _FUNCPAD:
-      if (clockwise) {
-        register_code(KC_WH_D);
-        unregister_code(KC_WH_D);
-      } else {
-        register_code(KC_WH_U);
-        unregister_code(KC_WH_U);
-      }
-      break;
-    case _ILSTR:
-      if (clockwise) {
-        register_code(KC_LCTL);
-        register_code(KC_EQL);
-        unregister_code(KC_EQL);
-        unregister_code(KC_LCTL);
-      } else {
-        register_code(KC_LCTL);
-        register_code(KC_MINS);
-        unregister_code(KC_MINS);
-        unregister_code(KC_LCTL);
-      }
-      break;
-    case _SWITCH:
-      if (clockwise) {
-        register_code(KC_LCTL);
-        register_code(KC_RBRC);
-        unregister_code(KC_RBRC);
-        unregister_code(KC_LCTL);
-      } else {
-        register_code(KC_LCTL);
-        register_code(KC_LBRC);
-        unregister_code(KC_LBRC);
-        unregister_code(KC_LCTL);
-      }
-      break;
-    default:
-      if (clockwise) {
-        register_code(KC_D);
-        unregister_code(KC_D);
-      } else {
-        register_code(KC_U);
-        unregister_code(KC_U);
-      }
-      break;
-    }
-  }
-  else if (index == 1)
-  {
-    switch (get_highest_layer(layer_state)) {
-    case _QWERTY:
-    case _FUNCPAD:
-      if (clockwise) {
-        register_code(KC_WH_D);
-        unregister_code(KC_WH_D);
-      } else {
-        register_code(KC_WH_U);
-        unregister_code(KC_WH_U);
-      }
-      break;
-    case _ILSTR:
-      if (clockwise) {
-        register_code(KC_LCTL);
-        register_code(KC_RBRC);
-        unregister_code(KC_RBRC);
-        unregister_code(KC_LCTL);
-      } else {
-        register_code(KC_LCTL);
-        register_code(KC_LBRC);
-        unregister_code(KC_LBRC);
-        unregister_code(KC_LCTL);
-      }
-      break;
-    case _SWITCH:
-      if (clockwise) {
-        register_code(KC_LCTL);
-        register_code(KC_RBRC);
-        unregister_code(KC_RBRC);
-        unregister_code(KC_LCTL);
-      } else {
-        register_code(KC_LCTL);
-        register_code(KC_LBRC);
-        unregister_code(KC_LBRC);
-        unregister_code(KC_LCTL);
-      }
-      break;
-    default:
-      if (clockwise) {
-        register_code(KC_WH_D);
-        unregister_code(KC_WH_D);
-      } else {
-        register_code(KC_WH_U);
-        unregister_code(KC_WH_U);
-      }
-      break;
-    }
-  }
-
-  return false;
-}
+#ifdef RGB_MATRIX_ENABLE
+// Forward-declare this helper function since it is defined in rgb_matrix.c.
+void rgb_matrix_update_pwm_buffers(void);
+#endif
 
 tap_dance_action_t tap_dance_actions[] = {
         [DANCE_ESC] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_ESC, dance_ESC_finished, dance_ESC_reset),

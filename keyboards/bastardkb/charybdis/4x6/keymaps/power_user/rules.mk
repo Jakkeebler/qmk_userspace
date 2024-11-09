@@ -1,0 +1,2 @@
+# VIA_ENALE = yes
+TAP_DANCE_ENABLE = yes
