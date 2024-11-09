@@ -1,2 +1,3 @@
 # VIA_ENALE = yes
 TAP_DANCE_ENABLE = yes
+# SWAP_HANDS_ENABLE = yes
