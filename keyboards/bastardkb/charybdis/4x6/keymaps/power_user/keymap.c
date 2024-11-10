@@ -2107,28 +2107,28 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      [LAYER_BASE] = LAYOUT(
           TD(DANCE_ESC), KC_1,     KC_2,     KC_3,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
           KC_TAB,        KC_Q,     KC_W,     KC_E,     KC_R,    KC_T,           KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
-          KC_LSFT,       KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
-          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_LALT,
+          KC_F15,        KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
+          KC_LSFT,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
                                              KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
-                                                       KC_BTN2, KC_BTN1,        KC_DEL
+                                                       KC_BTN2, KC_BTN1,        TO(LAYER_SELECTOR)
      ),
 
      [LAYER_QWERTY] = LAYOUT(
           TD(DANCE_ESC), KC_1,     KC_2,     KC_3,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
           KC_TAB,        KC_Q,     KC_W,     KC_E,     KC_R,    KC_T,           KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
           KC_LSFT,       KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
-          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_LALT,
+          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
                                              KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
-                                                       KC_BTN2, KC_BTN1,        KC_DEL
+                                                       KC_BTN2, KC_BTN1,        TO(LAYER_SELECTOR)
      ),
 
      [LAYER_DVORAK] = LAYOUT(
           TD(DANCE_ESC),      KC_1,       KC_2,        KC_3,     KC_4,    KC_5,           KC_6,    KC_7,   KC_8,   KC_9,   KC_0,       KC_RBRC,
           KC_QUOT,            KC_COMM,    KC_DOT,      KC_P,     KC_Y,    KC_F,           KC_G,    KC_C,   KC_R,   KC_L,   KC_SLSH,    KC_EQL,
-          KC_A,               KC_O,       KC_E,        KC_U,     KC_I,    KC_D,           KC_H,    KC_T,   KC_N,   KC_S,   KC_MINS,     KC_NO,
+          KC_A,               KC_O,       KC_E,        KC_U,     KC_I,    KC_D,           KC_H,    KC_T,   KC_N,   KC_S,   KC_MINS,    KC_NO,
           KC_LSFT,            KC_SCLN,    KC_Q,        KC_J,     KC_K,    KC_X,           KC_B,    KC_M,   KC_W,   KC_V,   KC_Z,       KC_RSFT,
                                                        KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
-                                                                 KC_BTN2, KC_BTN1,        KC_DEL
+                                                                 KC_BTN2, KC_BTN1,        TO(LAYER_SELECTOR)
      ),
 
      [LAYER_COLMAK] = LAYOUT(
@@ -2137,115 +2137,115 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_F15,          KC_A,   KC_R,   KC_S,    KC_T,     KC_D,    KC_H,           KC_N,    KC_E,       KC_I,       KC_O,       KC_NO,
         KC_LSFT,         KC_Z,   KC_X,   KC_V,    KC_B,     KC_K,    KC_M,           KC_COMM, KC_DOT,     KC_SLSH,    KC_NO,      KC_RSFT,
                                                   KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
-                                                            KC_BTN2, KC_BTN1,        KC_DEL
+                                                            KC_BTN2, KC_BTN1,        TO(LAYER_SELECTOR)
      ),
 
      [LAYER_ILLUSTRATOR] = LAYOUT(
           TD(DANCE_ESC), KC_I,     KC_2,     KC_3,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
           KC_TAB,        KC_Q,     KC_W,     KC_E,     KC_R,    KC_T,           KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
           KC_LSFT,       KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
-          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_LALT,
+          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
                                              KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
-                                                       KC_BTN2, KC_BTN1,        KC_DEL
+                                                       KC_BTN2, KC_BTN1,        TO(LAYER_SELECTOR)
      ),
 
      [LAYER_ILSTR_FUNC] = LAYOUT(
           TD(DANCE_ESC), KC_F,     KC_2,     KC_3,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
           KC_TAB,        KC_Q,     KC_W,     KC_E,     KC_R,    KC_T,           KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
           KC_LSFT,       KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
-          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_LALT,
+          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
                                              KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
-                                                       KC_BTN2, KC_BTN1,        KC_DEL
+                                                       KC_BTN2, KC_BTN1,        TO(LAYER_SELECTOR)
      ),
 
      [LAYER_ILSTR_SWITCH] = LAYOUT(
           TD(DANCE_ESC), KC_S,     KC_2,     KC_3,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
           KC_TAB,        KC_Q,     KC_W,     KC_E,     KC_R,    KC_T,           KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
           KC_LSFT,       KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
-          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_LALT,
+          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
                                              KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
-                                                       KC_BTN2, KC_BTN1,        KC_DEL
+                                                       KC_BTN2, KC_BTN1,        KC_NO
      ),
 
      [LAYER_PHOTOSHOP] = LAYOUT(
           TD(DANCE_ESC), KC_1,     KC_P,     KC_3,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
           KC_TAB,        KC_Q,     KC_W,     KC_E,     KC_R,    KC_T,           KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
           KC_LSFT,       KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
-          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_LALT,
+          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
                                              KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
-                                                       KC_BTN2, KC_BTN1,        KC_DEL
+                                                       KC_BTN2, KC_BTN1,        TO(LAYER_SELECTOR)
      ),
 
      [LAYER_PHTSHP_FUNC] = LAYOUT(
           TD(DANCE_ESC), KC_1,     KC_F,     KC_3,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
           KC_TAB,        KC_Q,     KC_W,     KC_E,     KC_R,    KC_T,           KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
           KC_LSFT,       KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
-          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_LALT,
+          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
                                              KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
-                                                       KC_BTN2, KC_BTN1,        KC_DEL
+                                                       KC_BTN2, KC_BTN1,        KC_NO
      ),
 
      [LAYER_PHTSHP_SWITCH] = LAYOUT(
           TD(DANCE_ESC), KC_1,     KC_S,     KC_3,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
           KC_TAB,        KC_Q,     KC_W,     KC_E,     KC_R,    KC_T,           KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
           KC_LSFT,       KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
-          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_LALT,
+          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
                                              KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
-                                                       KC_BTN2, KC_BTN1,        KC_DEL
+                                                       KC_BTN2, KC_BTN1,        KC_NO
      ),
 
      [LAYER_INDESIGN] = LAYOUT(
           TD(DANCE_ESC), KC_1,     KC_2,     KC_I,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
           KC_TAB,        KC_Q,     KC_W,     KC_E,     KC_R,    KC_T,           KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
           KC_LSFT,       KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
-          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_LALT,
+          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
                                              KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
-                                                       KC_BTN2, KC_BTN1,        KC_DEL
+                                                       KC_BTN2, KC_BTN1,        TO(LAYER_SELECTOR)
      ),
 
      [LAYER_INDS_FUNC] = LAYOUT(
           TD(DANCE_ESC), KC_1,     KC_2,     KC_F,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
           KC_TAB,        KC_Q,     KC_W,     KC_E,     KC_R,    KC_T,           KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
           KC_LSFT,       KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
-          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_LALT,
+          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
                                              KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
-                                                       KC_BTN2, KC_BTN1,        KC_DEL
+                                                       KC_BTN2, KC_BTN1,        KC_NO
      ),
 
      [LAYER_CODING] = LAYOUT(
           TD(DANCE_ESC), KC_C,     KC_2,     KC_3,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
           KC_TAB,        KC_Q,     KC_W,     KC_E,     KC_R,    KC_T,           KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
           KC_LSFT,       KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
-          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_LALT,
+          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
                                              KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
-                                                       KC_BTN2, KC_BTN1,        KC_DEL
+                                                       KC_BTN2, KC_BTN1,        KC_NO
      ),
 
      [LAYER_VIM] = LAYOUT(
           TD(DANCE_ESC), KC_V,     KC_2,     KC_3,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
           KC_TAB,        KC_Q,     KC_W,     KC_E,     KC_R,    KC_T,           KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
           KC_LSFT,       KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
-          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_LALT,
+          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
                                              KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
-                                                       KC_BTN2, KC_BTN1,        KC_DEL
+                                                       KC_BTN2, KC_BTN1,        KC_NO
      ),
 
      [LAYER_MEDIA] = LAYOUT(
           TD(DANCE_ESC), KC_M,     KC_2,     KC_3,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
           KC_TAB,        KC_Q,     KC_W,     KC_E,     KC_R,    KC_T,           KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
           KC_LSFT,       KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
-          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_LALT,
+          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
                                              KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
-                                                       KC_BTN2, KC_BTN1,        KC_DEL
+                                                       KC_BTN2, KC_BTN1,        KC_NO
      ),
 
      [LAYER_SELECTOR] = LAYOUT(
-          TD(DANCE_ESC), KC_M,     KC_2,     KC_3,     KC_4,    KC_5,           KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
-          KC_TAB,        KC_Q,     KC_W,     KC_E,     KC_R,    KC_T,           KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
-          KC_LSFT,       KC_A,     KC_S,     KC_D,     KC_F,    KC_G,           KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
-          KC_LCTL,       KC_Z,     KC_X,     KC_C,     KC_V,    KC_B,           KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_LALT,
+          TD(DANCE_ESC), KC_NO,    KC_NO,    KC_NO,    KC_NO,   QK_BOOT,          KC_NO,   KC_NO,                    KC_NO,                   KC_NO,              KC_NO,   QK_BOOT,
+          KC_NO,         KC_NO,    KC_NO,    KC_NO,    KC_NO,   KC_NO,          KC_NO,   KC_NO,                    KC_NO,                   KC_NO,              KC_NO,   KC_NO,
+          KC_NO,         KC_NO,    KC_NO,    KC_NO,    KC_NO,   KC_NO,          KC_NO,   TO(LAYER_ILLUSTRATOR),    TO(LAYER_PHOTOSHOP),     TO(LAYER_INDESIGN), KC_NO,   KC_NO,
+          KC_NO,         KC_NO,    KC_NO,    KC_NO,    KC_NO,   KC_NO,          KC_NO,   TO(LAYER_QWERTY),         TO(LAYER_DVORAK),        TO(LAYER_COLMAK),   KC_NO,   KC_NO,
                                              KC_BSPC,  KC_SPC,  KC_ENT,         KC_ENT,  KC_SPC,
-                                                       KC_BTN2, KC_BTN1,        KC_DEL
+                                                       KC_BTN2, KC_BTN1,        KC_NO
      ),
 
   [LAYER_MOUSE] = LAYOUT(
@@ -2276,10 +2276,10 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
     if (abs(mouse_report.x) > CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD || abs(mouse_report.y) > CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD) {
         if (auto_pointer_layer_timer == 0) {
             layer_on(LAYER_MOUSE);
-#        ifdef RGB_MATRIX_ENABLE
-            rgb_matrix_mode_noeeprom(RGB_MATRIX_NONE);
-            rgb_matrix_sethsv_noeeprom(HSV_GREEN);
-#        endif // RGB_MATRIX_ENABLE
+// #        ifdef RGB_MATRIX_ENABLE
+//             rgb_matrix_mode_noeeprom(RGB_MATRIX_NONE);
+//             rgb_matrix_sethsv_noeeprom(HSV_GREEN);
+// #        endif // RGB_MATRIX_ENABLE
         }
         auto_pointer_layer_timer = timer_read();
     }
@@ -2290,9 +2290,10 @@ void matrix_scan_user(void) {
     if (auto_pointer_layer_timer != 0 && TIMER_DIFF_16(timer_read(), auto_pointer_layer_timer) >= CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_TIMEOUT_MS) {
         auto_pointer_layer_timer = 0;
         layer_off(LAYER_MOUSE);
-#        ifdef RGB_MATRIX_ENABLE
-        rgb_matrix_mode_noeeprom(RGB_MATRIX_DEFAULT_MODE);
-#        endif // RGB_MATRIX_ENABLE
+
+// #        ifdef RGB_MATRIX_ENABLE
+//         rgb_matrix_mode_noeeprom(RGB_MATRIX_DEFAULT_MODE);
+// #        endif // RGB_MATRIX_ENABLE
     }
 }
 #    endif // CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_ENABLE
@@ -2309,26 +2310,56 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 // RGB
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 0,   7,  8,  15, 16, 20      ##, ##, ##, ##, ##, ##
+// 1,   6,  9,  14, 17, 21      ##, ##, ##, ##, ##, ##
+// 2,   5,  10, 13, 18, 22      ##, ##, ##, ##, ##, ##
+// 3,   4,  11, 12, 19, 23      ##, ##, ##, ##, ##, ##
+//              ##, ##, ##      ##, ##
+//                  ##, ##      ##
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #ifdef RGB_MATRIX_ENABLE
 // Forward-declare this helper function since it is defined in rgb_matrix.c.
 void rgb_matrix_update_pwm_buffers(void);
 #endif
 
 bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
-    for (uint8_t i = led_min; i < led_max; i++) {
         switch(get_highest_layer(layer_state|default_layer_state)) {
-            case LAYER_QWERTY:
-                rgb_matrix_set_color(i, RGB_BLUE);
-                break;
-            case LAYER_DVORAK:
-                rgb_matrix_set_color(i, RGB_YELLOW);
-                break;
-            default:
-                rgb_matrix_set_color(i, RGB_WHITE);
-                break;
+               case LAYER_QWERTY:
+                    rgb_matrix_set_color_all(180, 180, 180);
+                    break;
+               case LAYER_DVORAK:
+                    rgb_matrix_set_color_all(255, 230, 0);
+                    break;
+               case LAYER_COLMAK:
+                    rgb_matrix_set_color_all(255, 230, 0);
+                    break;
+               case LAYER_ILLUSTRATOR:
+                    rgb_matrix_set_color_all(255, 140, 0);
+                    break;
+               case LAYER_PHOTOSHOP:
+                    rgb_matrix_set_color_all(38, 139, 210);
+                    break;
+               case LAYER_INDESIGN:
+                    rgb_matrix_set_color_all(119, 62, 102);
+                    break;
+               case LAYER_SELECTOR:
+                    rgb_matrix_set_color_all(RGB_OFF);
+                    rgb_matrix_set_color(16,RGB_RED);
+                    rgb_matrix_set_color(17,RGB_WHITE);
+                    rgb_matrix_set_color(18,RGB_BLUE);
+                    rgb_matrix_set_color(19,RGB_YELLOW);
+                    rgb_matrix_set_color(20,RGB_GREEN);
+                    break;
+               default:
+                    rgb_matrix_set_color_all(RGB_WHITE);
+                    break;
         }
-    }
-    return false;
+
+    // rgb_matrix_update_pwm_bguffers();
+
+     return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////

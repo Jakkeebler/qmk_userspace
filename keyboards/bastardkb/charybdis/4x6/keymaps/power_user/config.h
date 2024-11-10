@@ -18,6 +18,8 @@
 
 #define LAYER_STATE_32BIT
 
+#define SPLIT_LAYER_STATE_ENABLE
+
 #ifdef VIA_ENABLE
 /* VIA configuration. */
 #    define DYNAMIC_KEYMAP_LAYER_COUNT 10
