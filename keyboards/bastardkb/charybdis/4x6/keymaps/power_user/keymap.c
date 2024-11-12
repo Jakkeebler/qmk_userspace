@@ -16,6 +16,9 @@
  */
 #include QMK_KEYBOARD_H
 
+// For Debugging
+#include "print.h"
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Mouse
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2276,10 +2279,10 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
     if (abs(mouse_report.x) > CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD || abs(mouse_report.y) > CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD) {
         if (auto_pointer_layer_timer == 0) {
             layer_on(LAYER_MOUSE);
-// #        ifdef RGB_MATRIX_ENABLE
-//             rgb_matrix_mode_noeeprom(RGB_MATRIX_NONE);
-//             rgb_matrix_sethsv_noeeprom(HSV_GREEN);
-// #        endif // RGB_MATRIX_ENABLE
+#        ifdef RGB_MATRIX_ENABLE
+            rgb_matrix_mode_noeeprom(RGB_MATRIX_NONE);
+            rgb_matrix_sethsv_noeeprom(HSV_GREEN);
+#        endif // RGB_MATRIX_ENABLE
         }
         auto_pointer_layer_timer = timer_read();
     }
@@ -2291,9 +2294,9 @@ void matrix_scan_user(void) {
         auto_pointer_layer_timer = 0;
         layer_off(LAYER_MOUSE);
 
-// #        ifdef RGB_MATRIX_ENABLE
-//         rgb_matrix_mode_noeeprom(RGB_MATRIX_DEFAULT_MODE);
-// #        endif // RGB_MATRIX_ENABLE
+#        ifdef RGB_MATRIX_ENABLE
+        rgb_matrix_mode_noeeprom(RGB_MATRIX_DEFAULT_MODE);
+#        endif // RGB_MATRIX_ENABLE
     }
 }
 #    endif // CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_ENABLE
@@ -2311,23 +2314,24 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// 0,   7,  8,  15, 16, 20      ##, ##, ##, ##, ##, ##
-// 1,   6,  9,  14, 17, 21      ##, ##, ##, ##, ##, ##
-// 2,   5,  10, 13, 18, 22      ##, ##, ##, ##, ##, ##
-// 3,   4,  11, 12, 19, 23      ##, ##, ##, ##, ##, ##
-//              ##, ##, ##      ##, ##
-//                  ##, ##      ##
+// 0,   7,  8,  15, 16, 20      49, 45, 44, 37, 36, 29
+// 1,   6,  9,  14, 17, 21      50, 46, 43, 38, 35, 30
+// 2,   5,  10, 13, 18, 22      51, 47, 42, 39, 34, 31
+// 3,   4,  11, 12, 19, 23      52, 48, 41, 40, 33, 32
+//              26, 27, 28      53, 54
+//                  25, 24      55
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef RGB_MATRIX_ENABLE
 // Forward-declare this helper function since it is defined in rgb_matrix.c.
 void rgb_matrix_update_pwm_buffers(void);
-#endif
 
+// LEDs for Each Layer
 bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
         switch(get_highest_layer(layer_state|default_layer_state)) {
                case LAYER_QWERTY:
                     rgb_matrix_set_color_all(180, 180, 180);
+                    rgb_matrix_set_color(29, RGB_RED);
                     break;
                case LAYER_DVORAK:
                     rgb_matrix_set_color_all(255, 230, 0);
@@ -2346,11 +2350,12 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
                     break;
                case LAYER_SELECTOR:
                     rgb_matrix_set_color_all(RGB_OFF);
-                    rgb_matrix_set_color(16,RGB_RED);
-                    rgb_matrix_set_color(17,RGB_WHITE);
-                    rgb_matrix_set_color(18,RGB_BLUE);
-                    rgb_matrix_set_color(19,RGB_YELLOW);
-                    rgb_matrix_set_color(20,RGB_GREEN);
+                    rgb_matrix_set_color(48, 180, 180, 180);
+                    rgb_matrix_set_color(41, 255, 230, 0);
+                    rgb_matrix_set_color(40, 255, 230, 0);
+                    rgb_matrix_set_color(47, 255, 140, 0);
+                    rgb_matrix_set_color(42, 38, 139, 210);
+                    rgb_matrix_set_color(39, 119, 62, 102);
                     break;
                default:
                     rgb_matrix_set_color_all(RGB_WHITE);
@@ -2361,6 +2366,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 
      return false;
 }
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Tap Dance
