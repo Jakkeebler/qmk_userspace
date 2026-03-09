@@ -123,19 +123,6 @@
             {"flags": 1, "matrix": [0, 0], "x": 0, "y": 0},
             {"flags": 1, "matrix": [0, 0], "x": 0, "y": 0},
             {"flags": 1, "matrix": [0, 0], "x": 0, "y": 0},
-            {"flags": 1, "matrix": [0, 0], "x": 0, "y": 0},
-            {"flags": 1, "matrix": [0, 0], "x": 0, "y": 0},
-            {"flags": 1, "matrix": [0, 0], "x": 0, "y": 0},
-            {"flags": 1, "matrix": [0, 0], "x": 0, "y": 0},
-            {"flags": 1, "matrix": [0, 0], "x": 0, "y": 0},
-            {"flags": 1, "matrix": [0, 0], "x": 0, "y": 0},
-            {"flags": 1, "matrix": [0, 0], "x": 0, "y": 0},
-            {"flags": 1, "matrix": [0, 0], "x": 0, "y": 0},
-            {"flags": 1, "matrix": [0, 0], "x": 0, "y": 0},
-            {"flags": 1, "matrix": [0, 0], "x": 0, "y": 0},
-            {"flags": 1, "matrix": [0, 0], "x": 0, "y": 0},
-            {"flags": 1, "matrix": [0, 0], "x": 0, "y": 0},
-            {"flags": 1, "matrix": [0, 0], "x": 0, "y": 0},
 
 
             {"flags": 4, "matrix": [10, 0], "x": 138, "y": 32},
@@ -187,10 +174,6 @@
             {"flags": 4, "matrix": [7, 5], "x": 155, "y": 53},
 
 
-            {"flags": 1, "matrix": [0, 0], "x": 0, "y": 0},
-            {"flags": 1, "matrix": [0, 0], "x": 0, "y": 0},
-            {"flags": 1, "matrix": [0, 0], "x": 0, "y": 0},
-            {"flags": 1, "matrix": [0, 0], "x": 0, "y": 0},
             {"flags": 1, "matrix": [0, 0], "x": 0, "y": 0},
             {"flags": 1, "matrix": [0, 0], "x": 0, "y": 0},
             {"flags": 1, "matrix": [0, 0], "x": 0, "y": 0},

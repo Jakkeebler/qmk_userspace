@@ -1,6 +1,7 @@
 {
     "userspace_version": "1.0",
     "build_targets": [
+        ["arcane_codex/cyboard/imprint/imprint_function_row_5key_bottom_row", "control_center-vanilla"],
         ["skree/trackball/dualtb5x6oled", "default"]
     ]
 }
