@@ -3,7 +3,6 @@
 *.swp
 *~
 .DS_Store
-._*
 
 # Firmware files
 *.hex
