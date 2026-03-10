@@ -4,19 +4,101 @@
 
 #include QMK_KEYBOARD_H
 
-const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+enum layer_names {
+    _BASE,
+    _NAV,
+    _L2,
+    _L3,
+    _L4,
+    _L5,
+    _L6,
+    _L7,
+    _L8,
+    _L9,
+};
 
-    [0] = LAYOUT_fun_full_bottom_row(
+const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+    /*
+     * Base layer
+     *
+     * Left main block (6 columns, bottom row is 5 keys):
+     * ,-----------------------------------------.
+     * | Esc | F1  | F2  | F3  | F4  | F5  |
+     * |  =  |  1  |  2  |  3  |  4  |  5  |
+     * | Tab |  Q  |  W  |  E  |  R  |  T  |
+     * |Ctrl |  A  |  S  |  D  |  F  |  G  |
+     * |Shift|  Z  |  X  |  C  |  V  |  B  |
+     * |Left |Right| GUI | Alt |  '  |
+     * `-----------------------------------------'
+     *
+     * Left thumb cluster (around left trackball):
+     * ,-----------------------.
+     * | GUI  | Enter | Del  |
+     * | Mid  | Right | Left |
+     * `-----------------------'
+     *
+     * Right main block (6 columns, bottom row is 5 keys):
+     * ,-----------------------------------------.
+     * | F6  | F7  | F8  | F9  | F10 | F11 |
+     * |  6  |  7  |  8  |  9  |  0  |  -  |
+     * |  Y  |  U  |  I  |  O  |  P  |  \  |
+     * |  H  |  J  |  K  |  L  |  ;  |  '  |
+     * |  N  |  M  |  ,  |  .  |  /  |Shift|
+     * |  [  |  [  |  ]  | Up  |Down |
+     * `-----------------------------------------'
+     *
+     * Right thumb cluster (around right trackball):
+     * ,-----------------------.
+     * | Bspc | Spc  | Nav  |
+     * |  `   | Caps | App  |
+     * `-----------------------'
+     */
+    [_BASE] = LAYOUT_fun_full_bottom_row(
         KC_ESC,  KC_F1,    KC_F2,   KC_F3,   KC_F4,   KC_F5,                               KC_F6,   KC_F7,   KC_F8,  KC_F9,  KC_F10,  KC_F11,
         KC_EQL,  KC_1,     KC_2,    KC_3,    KC_4,    KC_5,                                KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
         KC_TAB,  KC_Q,     KC_W,    KC_E,    KC_R,    KC_T,                                KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
         KC_LCTL, KC_A,     KC_S,    KC_D,    KC_F,    KC_G,                                KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
         KC_LSFT, KC_Z,     KC_X,    KC_C,    KC_V,    KC_B,                                KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
-        KC_LEFT, KC_RIGHT, KC_LGUI, KC_LALT, KC_QUOT, KC_LGUI, KC_ENT, KC_DEL,           KC_BSPC,  KC_SPC,  MO(1), KC_LBRC, KC_LBRC,  KC_RBRC, KC_UP, KC_DOWN,
-                                            KC_HOME, KC_END,    KC_ESC,           KC_GRAVE,  KC_CAPS,  KC_APP
+        KC_LEFT, KC_RIGHT, KC_LGUI, KC_LALT, KC_QUOT, KC_LGUI, KC_ENT, KC_DEL,           KC_BSPC,  KC_SPC,  MO(_NAV), KC_LBRC, KC_LBRC,  KC_RBRC, KC_UP, KC_DOWN,
+                                             MS_BTN3, MS_BTN2,    MS_BTN1,           KC_GRAVE,  KC_CAPS,  KC_APP
     ),
 
-    [1] = LAYOUT_fun_full_bottom_row(
+    /*
+     * Nav layer
+     *
+     * Left main block:
+     * ,-----------------------------------------.
+     * |     |     |     |     |     |     |
+     * |     |     |     |     |     |     |
+     * |     |     |     |     |     |     |
+     * |     |     |     |     |     |     |
+     * |     |     |     |     |     |     |
+     * |     |     |     |     |     |
+     * `-----------------------------------------'
+     *
+     * Left thumb cluster:
+     * ,-----------------------.
+     * |      |      |      |
+     * |      |      |      |
+     * `-----------------------'
+     *
+     * Right main block:
+     * ,-----------------------------------------.
+     * |     |     |     |     |     |     |
+     * |     |     |     |     |     |     |
+     * |     |Home | Up  | End |     |     |
+     * |     |Left |Down |Right|     |     |
+     * |     |     |     |     |     |     |
+     * |     |     |     |     |     |
+     * `-----------------------------------------'
+     *
+     * Right thumb cluster:
+     * ,-----------------------.
+     * |      |      |      |
+     * |      |      |      |
+     * `-----------------------'
+     */
+    [_NAV] = LAYOUT_fun_full_bottom_row(
         _______, _______, _______, _______, _______, _______,                           _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______,                           _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______,                           _______, KC_HOME, KC_UP,   KC_END,  _______, _______,
@@ -26,7 +108,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                             _______, _______, _______,         _______, _______, _______
     ),
 
-    [2] = LAYOUT_fun_full_bottom_row(
+    /* Layer 2: fully transparent placeholder. */
+    [_L2] = LAYOUT_fun_full_bottom_row(
         _______, _______, _______, _______, _______, _______,                                           _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______,                                           _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______,                                           _______, _______, _______, _______, _______, _______,
@@ -36,7 +119,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                        _______, _______, _______,   _______, _______, _______
     ),
 
-    [3] = LAYOUT_fun_full_bottom_row(
+    /* Layer 3: fully transparent placeholder. */
+    [_L3] = LAYOUT_fun_full_bottom_row(
         _______, _______, _______, _______, _______, _______,                                           _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______,                                           _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______,                                           _______, _______, _______, _______, _______, _______,
@@ -46,7 +130,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                        _______, _______, _______,   _______, _______, _______
     ),
 
-    [4] = LAYOUT_fun_full_bottom_row(
+    /* Layer 4: fully transparent placeholder. */
+    [_L4] = LAYOUT_fun_full_bottom_row(
         _______, _______, _______, _______, _______, _______,                                           _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______,                                           _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______,                                           _______, _______, _______, _______, _______, _______,
@@ -56,7 +141,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                        _______, _______, _______,   _______, _______, _______
     ),
 
-    [5] = LAYOUT_fun_full_bottom_row(
+    /* Layer 5: fully transparent placeholder. */
+    [_L5] = LAYOUT_fun_full_bottom_row(
         _______, _______, _______, _______, _______, _______,                                           _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______,                                           _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______,                                           _______, _______, _______, _______, _______, _______,
@@ -66,7 +152,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                        _______, _______, _______,   _______, _______, _______
     ),
 
-    [6] = LAYOUT_fun_full_bottom_row(
+    /* Layer 6: fully transparent placeholder. */
+    [_L6] = LAYOUT_fun_full_bottom_row(
         _______, _______, _______, _______, _______, _______,                                           _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______,                                           _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______,                                           _______, _______, _______, _______, _______, _______,
@@ -76,7 +163,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                        _______, _______, _______,   _______, _______, _______
     ),
 
-    [7] = LAYOUT_fun_full_bottom_row(
+    /* Layer 7: fully transparent placeholder. */
+    [_L7] = LAYOUT_fun_full_bottom_row(
         _______, _______, _______, _______, _______, _______,                                           _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______,                                           _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______,                                           _______, _______, _______, _______, _______, _______,
@@ -86,7 +174,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                        _______, _______, _______,   _______, _______, _______
     ),
 
-    [8] = LAYOUT_fun_full_bottom_row(
+    /* Layer 8: fully transparent placeholder. */
+    [_L8] = LAYOUT_fun_full_bottom_row(
         _______, _______, _______, _______, _______, _______,                                           _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______,                                           _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______,                                           _______, _______, _______, _______, _______, _______,
@@ -96,7 +185,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                        _______, _______, _______,   _______, _______, _______
     ),
 
-    [9] = LAYOUT_fun_full_bottom_row(
+    /* Layer 9: fully transparent placeholder. */
+    [_L9] = LAYOUT_fun_full_bottom_row(
         _______, _______, _______, _______, _______, _______,                                           _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______,                                           _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______, _______,                                           _______, _______, _______, _______, _______, _______,
@@ -111,6 +201,24 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 void keyboard_post_init_user(void) {
     rgb_matrix_enable_noeeprom();
     rgb_matrix_mode_noeeprom(RGB_MATRIX_SOLID_COLOR);
-    rgb_matrix_sethsv_noeeprom(85, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS);
+}
+
+bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+#    ifdef RGB_MATRIX_SPLIT
+    static const uint8_t rgb_matrix_split[] = RGB_MATRIX_SPLIT;
+    const uint8_t        left_led_count     = rgb_matrix_split[0];
+#    else
+    const uint8_t left_led_count = RGB_MATRIX_LED_COUNT / 2;
+#    endif
+
+    for (uint8_t i = led_min; i < led_max; i++) {
+        if (i < left_led_count) {
+            rgb_matrix_set_color(i, 255, 0, 255);
+        } else {
+            rgb_matrix_set_color(i, 125, 249, 255);
+        }
+    }
+
+    return true;
 }
 #endif
