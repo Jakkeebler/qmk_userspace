@@ -4,6 +4,18 @@
 
 #include QMK_KEYBOARD_H
 
+#ifdef COMBO_ENABLE
+combo_t key_combos[] = {};
+#endif
+
+#ifdef TAP_DANCE_ENABLE
+tap_dance_action_t tap_dance_actions[] = {};
+#endif
+
+#ifdef KEY_OVERRIDE_ENABLE
+const key_override_t *key_overrides[] = {};
+#endif
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [0] = LAYOUT_fun_full_bottom_row(

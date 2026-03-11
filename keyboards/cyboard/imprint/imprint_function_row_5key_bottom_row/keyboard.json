@@ -1,6 +1,6 @@
 {
     "rgb_matrix": {
-        "split_count": [127, 127],
+        "split_count": [114, 123],
         "layout": [
             {"flags": 4, "matrix": [3, 0], "x": 86, "y": 32},
             {"flags": 4, "matrix": [2, 0], "x": 86, "y": 43},
@@ -353,3 +353,4 @@
         }
     }
 }
+
