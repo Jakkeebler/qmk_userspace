@@ -4,6 +4,10 @@
 *~
 .DS_Store
 
+# Claude files
+CLAUDE.md
+.claude/
+
 # Firmware files
 *.hex
 *.bin

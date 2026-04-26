@@ -7,6 +7,7 @@
 /* Split keyboard settings */
 #define SERIAL_USART_TX_PIN GP28
 #define SPLIT_HAND_PIN GP0
+#define SPLIT_LAYER_STATE_ENABLE
 
 /* RGB settings */
 #ifdef RGB_MATRIX_ENABLE

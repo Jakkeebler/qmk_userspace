@@ -1,1 +1,3 @@
 LTO_ENABLE = no
+TAP_DANCE_ENABLE = yes
+COMBO_ENABLE = no
