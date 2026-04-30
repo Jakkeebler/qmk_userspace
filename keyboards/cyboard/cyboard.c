@@ -21,10 +21,6 @@
 #include "transactions.h"
 #include <string.h>
 
-#ifdef CONSOLE_ENABLE
-#    include "print.h"
-#endif // CONSOLE_ENABLE
-
 #ifdef SPLIT_POINTING_ENABLE
 #    ifndef CHARYBDIS_MINIMUM_DEFAULT_DPI
 #        define CHARYBDIS_MINIMUM_DEFAULT_DPI 400
@@ -565,11 +561,7 @@ void housekeeping_task_kb(void) {
             needs_sync = true;
             memcpy(&last_charybdis_config_right, &g_charybdis_config_right, sizeof(g_charybdis_config_right));
         }
-
-        // Send to slave every 500ms regardless of state change.
-        if (timer_elapsed32(last_sync) > 500) {
-            needs_sync = true;
-        }
+        (void)last_sync;
 
         // Perform the sync if requested.
         if (needs_sync) {
