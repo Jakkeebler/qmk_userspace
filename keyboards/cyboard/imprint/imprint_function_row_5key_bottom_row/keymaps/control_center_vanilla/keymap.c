@@ -50,9 +50,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 		TD(TDK_ESC_BASE),	KC_F1,			KC_F2,			KC_F3,			KC_F4,			KC_F5,																					KC_F6,	KC_F7,			KC_F8,			KC_F9,			KC_F10,		    KC_MINS,
 		_______,			KC_1,			KC_2,			KC_3,			KC_4,			KC_5,																					KC_6,	KC_7,			KC_8,			KC_9,			KC_0,		    KC_EQL,
 		KC_TAB,				KC_Q,			KC_W,			KC_E,			KC_R,			KC_T,																					KC_Y,	KC_U,			KC_I,			KC_O,			KC_P,		    _______,
-		_______,			LGUI_T(KC_A),	LSFT_T(KC_S),	LALT_T(KC_D),	LCTL_T(KC_F),	KC_G,																					KC_H,	RCTL_T(KC_J),	RALT_T(KC_K),	RSFT_T(KC_L),	KC_SCLN,	    KC_QUOT,
+		KC_DEL,			    LGUI_T(KC_A),	LSFT_T(KC_S),	LALT_T(KC_D),	LCTL_T(KC_F),	KC_G,																					KC_H,	RCTL_T(KC_J),	RALT_T(KC_K),	RSFT_T(KC_L),	KC_SCLN,	    KC_QUOT,
 		KC_LSFT,			KC_Z,			KC_X,			KC_C,			KC_V,			KC_B,																					KC_N, 	KC_M,			KC_COMM,		KC_DOT,			KC_SLSH,	    KC_RSFT,
-		TG(_SWAP),			TG(_POINTER),	_______,	    C(S(KC_TAB)),	C(KC_TAB),			    MS_BTN1,	MS_BTN2,	MS_BTN3,		MO(_UTIL),		KC_ENT,		KC_SPC,   			C(S(KC_TAB)),	C(KC_TAB),	    _______,		TG(_ONEHAND),   MO(_FUNC),
+		TG(_SWAP),			TG(_POINTER),	C(KC_W),	    C(S(KC_TAB)),	C(KC_TAB),			    MS_BTN1,	MS_BTN2,	MS_BTN3,		MO(_UTIL),		KC_ENT,		KC_SPC,   			C(S(KC_TAB)),	C(KC_TAB),	    C(KC_W),		TG(_ONEHAND),   MO(_FUNC),
 																									KC_SPC,		MO(_TAP),	MO(_FUNC),      MO(_FUNC),      MO(_TAP),	KC_BSPC
 	),
 
@@ -69,7 +69,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 	/* Layer 2: Util — combos and bracket shortcuts. */
 	[_UTIL] = LAYOUT_fun_full_bottom_row(
-		TG(_SWAP), TG(_POINTER), _______,    _______,    _______,    _______,                                  _______, _______,    _______, _______,    TG(_POINTER), TG(_SWAP),
+		TD(TDK_ESC_BASE), TG(_POINTER), _______,    _______,    _______,    _______,                                  _______, _______,    _______, _______,    TG(_POINTER), TG(_SWAP),
 		_______, _______, _______,    _______,    _______,    _______,                                           _______, _______,    _______, _______,    _______, _______,
 		_______, _______, CK_F3_1,    _______,    CK_F3_2,    CK_F3_3,                                           _______, S(KC_9),    _______, S(KC_0),    _______, _______,
 		_______, _______, CK_F3_L,    CK_F3_C,    CK_F3_R,    _______,                                           _______, KC_LBRC,    _______, KC_RBRC,    _______, _______,
@@ -84,7 +84,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	 * Tap+hold:   Ctrl+Alt+KC | Double tap+hold: Alt+Shift+KC | Triple tap: MEH+KC
 	 */
 	[_TAP] = LAYOUT_fun_full_bottom_row(
-		TD(TDK_ESC_BASE),       TD(TDK_F1),   TD(TDK_F2),   TD(TDK_F3),   TD(TDK_F4),   TD(TDK_F5),                                                        TD(TDK_F6),   TD(TDK_F7),   TD(TDK_F8),   TD(TDK_F9),   TD(TDK_F10),  TD(TDK_MINS),
+		TD(TDK_ESC_BASE),       TD(TDK_F1),   TD(TDK_F2),   TD(TDK_F3),   TD(TDK_F4),   TD(TDK_F5),                                              TD(TDK_F6),   TD(TDK_F7),   TD(TDK_F8),   TD(TDK_F9),   TD(TDK_F10),  TD(TDK_MINS),
 		_______,      TD(TDK_1),    TD(TDK_2),    TD(TDK_3),    TD(TDK_4),    TD(TDK_5),                                                         TD(TDK_6),    TD(TDK_7),    TD(TDK_8),    TD(TDK_9),    TD(TDK_0),   TD(TDK_PLUS),
 		KC_TAB,       TD(TDK_Q),    TD(TDK_W),    TD(TDK_E),    TD(TDK_R),    TD(TDK_T),                                                         TD(TDK_Y),    TD(TDK_U),    TD(TDK_I),    TD(TDK_O),    TD(TDK_P),    _______,
 		_______,      TD(TDK_A),    TD(TDK_S),    TD(TDK_D),    TD(TDK_F),    TD(TDK_G),                                                         TD(TDK_H),    TD(TDK_J),    TD(TDK_K),    TD(TDK_L),    TD(TDK_SCLN), TD(TDK_QUOT),
@@ -98,15 +98,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 		KC_F6,     KC_F7,     KC_F8,     KC_F9,     KC_F10,    KC_MINS,                                          TD(TDK_ESC_BASE),    KC_F1,     KC_F2,     KC_F3,     KC_F4,     KC_F5,
 		KC_6,      KC_7,      KC_8,      KC_9,      KC_0,      KC_EQL,                                           _______,   KC_1,      KC_2,      KC_3,      KC_4,      KC_5,
 		KC_Y,      KC_U,      KC_I,      KC_O,      KC_P,      _______,                                           KC_TAB,    KC_Q,      KC_W,      KC_E,      KC_R,      KC_T,
-		KC_H,      RCTL_T(KC_J), RALT_T(KC_K), RSFT_T(KC_L), KC_SCLN, KC_QUOT,                                   _______,   LGUI_T(KC_A), LSFT_T(KC_S), LALT_T(KC_D), LCTL_T(KC_F), KC_G,
+		KC_H,      RCTL_T(KC_J), RALT_T(KC_K), RSFT_T(KC_L), KC_SCLN, KC_QUOT,                                   KC_DEL,    LGUI_T(KC_A), LSFT_T(KC_S), LALT_T(KC_D), LCTL_T(KC_F), KC_G,
 		KC_N,      KC_M,      KC_COMM,   KC_DOT,    KC_SLSH,   KC_RSFT,                                          KC_LSFT,   KC_Z,      KC_X,      KC_C,      KC_V,      KC_B,
-		TG(_BASE),   _______,   _______,   _______,   MO(_FUNC), KC_MEH,    KC_ENT,    KC_SPC,    MS_BTN1,   MS_BTN2,   MS_BTN3,   _______,   _______,   _______,   _______,   _______,
-																					KC_RCTL,   KC_RALT,   KC_BSPC,   C(KC_TAB), C(S(KC_TAB)), MO(_UTIL)
+		C(S(KC_TAB)), C(KC_TAB), C(KC_W),   TG(_ONEHAND), MO(_FUNC),    MO(_UTIL), KC_ENT,    KC_SPC,    MS_BTN1,   MS_BTN2,   MS_BTN3,   TG(_SWAP), TG(_POINTER), C(KC_W),   C(S(KC_TAB)), C(KC_TAB),
+																			MO(_FUNC), MO(_TAP),  KC_BSPC,   KC_SPC,    MO(_TAP),     MO(_FUNC)
 	),
 
 	/* Layer 5: Pointer settings â€” left controls on the left, right controls on the right. */
 	[_POINTER] = LAYOUT_fun_full_bottom_row(
-		TG(_POINTER), LEFT_DRAGSCROLL_MODE_TOGGLE, LEFT_SNIPING_MODE_TOGGLE, LEFT_POINTER_DEFAULT_DPI_REVERSE, LEFT_POINTER_DEFAULT_DPI_FORWARD, _______,   _______, RIGHT_POINTER_DEFAULT_DPI_REVERSE, RIGHT_POINTER_DEFAULT_DPI_FORWARD, RIGHT_SNIPING_MODE_TOGGLE, RIGHT_DRAGSCROLL_MODE_TOGGLE, TG(_POINTER),
+		TD(TDK_ESC_BASE), LEFT_DRAGSCROLL_MODE_TOGGLE, LEFT_SNIPING_MODE_TOGGLE, LEFT_POINTER_DEFAULT_DPI_REVERSE, LEFT_POINTER_DEFAULT_DPI_FORWARD, _______,   _______, RIGHT_POINTER_DEFAULT_DPI_REVERSE, RIGHT_POINTER_DEFAULT_DPI_FORWARD, RIGHT_SNIPING_MODE_TOGGLE, RIGHT_DRAGSCROLL_MODE_TOGGLE, TG(_POINTER),
 		_______,      LEFT_DRAGSCROLL_MODE,        LEFT_SNIPING_MODE,        LEFT_POINTER_SNIPING_DPI_REVERSE, LEFT_POINTER_SNIPING_DPI_FORWARD, _______,   _______, RIGHT_POINTER_SNIPING_DPI_REVERSE, RIGHT_POINTER_SNIPING_DPI_FORWARD, RIGHT_SNIPING_MODE, RIGHT_DRAGSCROLL_MODE, _______,
 		_______,      _______,                      _______,                  _______,                           _______,                           _______,   _______, _______,                           _______,                           _______,            _______,              _______,
 		_______,      _______,                      _______,                  _______,                           _______,                           _______,   _______, _______,                           _______,                           _______,            _______,              _______,
@@ -128,7 +128,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 	/* One-hand layer — alphas/numbers blanked; J/K/L become MS_BTN1/2/3; base thumb cluster preserved. */
 	[_ONEHAND] = LAYOUT_fun_full_bottom_row(
-		KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,                                                   				KC_NO,   	KC_NO,    KC_NO,    KC_NO,    KC_NO,   KC_NO,
+		TD(TDK_ESC_BASE), KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,                                                   				KC_NO,   	KC_NO,    KC_NO,    KC_NO,    KC_NO,   KC_NO,
 		KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,                                                   				KC_NO,   	KC_NO,    KC_NO,    KC_NO,    KC_NO,   KC_NO,
 		KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,                                                   				KC_NO,   	KC_NO,    KC_NO,    KC_NO,    KC_NO,   KC_NO,
 		KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,                                                   				KC_NO,   	MS_BTN1,  MS_BTN2,  MS_BTN3,  KC_NO,   KC_NO,
@@ -370,6 +370,10 @@ tap_dance_action_t tap_dance_actions[] = {
 #define BRACKET_G 180
 #define BRACKET_B 0
 
+#define SHORTCUT_R 0
+#define SHORTCUT_G 90
+#define SHORTCUT_B 220
+
 #define TAP_ACCENT_R 104
 #define TAP_ACCENT_G 203
 #define TAP_ACCENT_B 227
@@ -392,6 +396,21 @@ static bool is_modifier_indicator_keycode(uint16_t keycode) {
 	}
 
 	return false;
+}
+
+// Ctrl-based action shortcuts that should read as blue, not amber (they carry a
+// Ctrl mod so they'd otherwise trip the modifier-indicator fallback).
+static bool is_ctrl_shortcut_keycode(uint16_t keycode) {
+	switch (keycode) {
+		case C(KC_W):
+		case C(KC_TAB):
+		case C(S(KC_TAB)):
+		case C(KC_MINS):
+		case C(KC_EQL):
+			return true;
+		default:
+			return false;
+	}
 }
 
 static bool is_home_row_mod_keycode(uint16_t keycode) {
@@ -530,9 +549,11 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 			// 3. Layer-specific keycode coloring (BASE/SWAP/WACOM thumb keys, FUNC arrows/F-keys/BOOT, TAP F-keys).
 			if (layer_keycode_color(layer, keycode, index)) continue;
 
-			// 4. Generic fallback: home-row mods pink, layer/modifier keys amber.
+			// 4. Generic fallback: home-row mods pink, Ctrl shortcuts blue, layer/modifier keys amber.
 			if (is_home_row_mod_keycode(keycode)) {
 				rgb_matrix_set_color(index, HOME_ROW_R, HOME_ROW_G, HOME_ROW_B);
+			} else if (is_ctrl_shortcut_keycode(keycode)) {
+				rgb_matrix_set_color(index, SHORTCUT_R, SHORTCUT_G, SHORTCUT_B);
 			} else if (is_layer_indicator_keycode(keycode) || is_modifier_indicator_keycode(keycode)) {
 				rgb_matrix_set_color(index, AMBER_R, AMBER_G, AMBER_B);
 			}
