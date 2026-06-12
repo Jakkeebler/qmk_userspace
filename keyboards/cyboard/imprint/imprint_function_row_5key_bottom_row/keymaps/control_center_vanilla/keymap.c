@@ -52,7 +52,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 		KC_TAB,				KC_Q,			KC_W,			KC_E,			KC_R,			KC_T,																					KC_Y,	KC_U,			KC_I,			KC_O,			KC_P,		    _______,
 		KC_DEL,			    LGUI_T(KC_A),	LSFT_T(KC_S),	LALT_T(KC_D),	LCTL_T(KC_F),	KC_G,																					KC_H,	RCTL_T(KC_J),	RALT_T(KC_K),	RSFT_T(KC_L),	KC_SCLN,	    KC_QUOT,
 		KC_LSFT,			KC_Z,			KC_X,			KC_C,			KC_V,			KC_B,																					KC_N, 	KC_M,			KC_COMM,		KC_DOT,			KC_SLSH,	    KC_RSFT,
-		TG(_SWAP),			TG(_POINTER),	C(KC_W),	    C(S(KC_TAB)),	C(KC_TAB),			    MS_BTN1,	MS_BTN2,	MS_BTN3,		MO(_UTIL),		KC_ENT,		KC_SPC,   			C(S(KC_TAB)),	C(KC_TAB),	    C(KC_W),		TG(_ONEHAND),   MO(_FUNC),
+		_______,			KC_END,	        KC_HOME,	    KC_PGDN,	KC_PGUP,			    MS_BTN1,	MS_BTN2,	MS_BTN3,		MO(_UTIL),		KC_ENT,		KC_SPC,   			C(S(KC_TAB)),	C(KC_TAB),	    C(KC_W),		TG(_ONEHAND),   TG(_POINTER),
 																									KC_SPC,		MO(_TAP),	MO(_FUNC),      MO(_FUNC),      MO(_TAP),	KC_BSPC
 	),
 
@@ -133,8 +133,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 		KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,                                                   				KC_NO,   	KC_NO,    KC_NO,    KC_NO,    KC_NO,   KC_NO,
 		KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,                                                   				KC_NO,   	MS_BTN1,  MS_BTN2,  MS_BTN3,  KC_NO,   KC_NO,
 		KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,                                                   				KC_NO,   	KC_NO,    KC_NO,    KC_NO,    KC_NO,   KC_NO,
-		MO(_UTIL), _______,   _______,   TG(_SWAP), TG(_POINTER),  	MS_BTN1, MS_BTN2, MS_BTN3,   	KC_RCTL, 		KC_ENT, 	KC_SPC,   			MO(_UTIL), _______, MO(_TAP), MO(_UTIL), MO(_FUNC),
-																	KC_SPC, MO(_TAP), MO(_FUNC), 	C(S(KC_TAB)), 	C(KC_TAB), 	KC_BSPC
+		TG(_ONEHAND), KC_NO,  C(KC_W),   C(S(KC_TAB)), C(KC_TAB),  	MS_BTN1, MS_BTN2, MS_BTN3,   	MO(_UTIL), 		KC_ENT, 	KC_SPC,   			C(S(KC_TAB)), C(KC_TAB), C(KC_W),  KC_NO,     KC_NO,
+																	KC_SPC, MO(_TAP), MO(_FUNC), 	MO(_FUNC), 	MO(_TAP), 	KC_BSPC
 	),
 
 	/* Layer 8: fully transparent placeholder. */
@@ -370,10 +370,6 @@ tap_dance_action_t tap_dance_actions[] = {
 #define BRACKET_G 180
 #define BRACKET_B 0
 
-#define SHORTCUT_R 0
-#define SHORTCUT_G 90
-#define SHORTCUT_B 220
-
 #define TAP_ACCENT_R 104
 #define TAP_ACCENT_G 203
 #define TAP_ACCENT_B 227
@@ -549,11 +545,9 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 			// 3. Layer-specific keycode coloring (BASE/SWAP/WACOM thumb keys, FUNC arrows/F-keys/BOOT, TAP F-keys).
 			if (layer_keycode_color(layer, keycode, index)) continue;
 
-			// 4. Generic fallback: home-row mods pink, Ctrl shortcuts blue, layer/modifier keys amber.
-			if (is_home_row_mod_keycode(keycode)) {
+			// 4. Generic fallback: home-row mods + Ctrl shortcuts pink, layer/modifier keys amber.
+			if (is_home_row_mod_keycode(keycode) || is_ctrl_shortcut_keycode(keycode)) {
 				rgb_matrix_set_color(index, HOME_ROW_R, HOME_ROW_G, HOME_ROW_B);
-			} else if (is_ctrl_shortcut_keycode(keycode)) {
-				rgb_matrix_set_color(index, SHORTCUT_R, SHORTCUT_G, SHORTCUT_B);
 			} else if (is_layer_indicator_keycode(keycode) || is_modifier_indicator_keycode(keycode)) {
 				rgb_matrix_set_color(index, AMBER_R, AMBER_G, AMBER_B);
 			}
